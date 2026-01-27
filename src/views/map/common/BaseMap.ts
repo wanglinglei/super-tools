@@ -1,4 +1,5 @@
 const mapKey = import.meta.env.VITE_AMAP_KEY;
+const securityJsCode = import.meta.env.VITE_AMAP_SECURITY_JS_CODE;
 import AMapLoader from '@amap/amap-jsapi-loader';
 import { mapDefaultConfig } from './constants';
 import type { BaseMapProps } from './types';
@@ -19,10 +20,21 @@ class BaseMap {
    */
   private async initMap(): Promise<void> {
     const { containerId, baseMapConfig = {} } = this.mapOptions;
+    
+    // 设置安全密钥
+    (window as any)._AMapSecurityConfig = {
+      securityJsCode: securityJsCode,
+    };
+    
     this.AMap = await AMapLoader.load({
       key: mapKey,
       version: '2.0',
-      plugins: ['AMap.Scale', 'AMap.ToolBar'],
+      plugins: [
+        'AMap.Scale',
+        'AMap.ToolBar',
+        'AMap.Geocoder',
+        'AMap.Weather',
+      ],
     });
     const { zoom, center, viewMode } = { ...mapDefaultConfig, ...baseMapConfig };
     this.map = new this.AMap.Map(containerId, {

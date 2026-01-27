@@ -16,6 +16,14 @@ const router = createRouter({
       },
     },
     {
+      path: '/map/weather',
+      name: 'map-weather',
+      component: () => import('../views/map/weather/index.vue'),
+      meta: {
+        title: '天气查询',
+      },
+    },
+    {
       path: '/editor/json',
       name: 'editor-json',
       component: () => import('../views/editor/json/index.vue'),
