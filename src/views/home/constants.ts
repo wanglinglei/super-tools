@@ -64,24 +64,24 @@ export const mapTools: Tool[] = [
  * 即将推出的工具列表
  */
 export const comingTools: ComingTool[] = [
-  {
-    name: "html-editor",
-    icon: "</>",
-    title: "HTML 编辑器",
-    description: "在线编辑和预览 HTML 代码",
-  },
-  {
-    name: "sql-formatter",
-    icon: "SQL",
-    title: "SQL 格式化",
-    description: "格式化和美化 SQL 语句",
-  },
-  {
-    name: "unit-converter",
-    icon: "🔄",
-    title: "单位转换",
-    description: "长度、重量、温度等单位快速转换",
-  },
+  // {
+  //   name: "html-editor",
+  //   icon: "</>",
+  //   title: "HTML 编辑器",
+  //   description: "在线编辑和预览 HTML 代码",
+  // },
+  // {
+  //   name: "sql-formatter",
+  //   icon: "SQL",
+  //   title: "SQL 格式化",
+  //   description: "格式化和美化 SQL 语句",
+  // },
+  // {
+  //   name: "unit-converter",
+  //   icon: "🔄",
+  //   title: "单位转换",
+  //   description: "长度、重量、温度等单位快速转换",
+  // },
   {
     name: "timestamp",
     icon: "⏰",
