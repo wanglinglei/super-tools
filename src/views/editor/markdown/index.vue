@@ -568,9 +568,6 @@ onUnmounted(() => {
     editor.destroy();
     editor = null;
   }
-  if (messageTimer) {
-    clearTimeout(messageTimer);
-  }
 });
 </script>
 
