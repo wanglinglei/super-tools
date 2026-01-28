@@ -75,8 +75,8 @@ export const generalTools: Tool[] = [
   {
     name: "qrcode",
     icon: "📱",
-    title: "二维码生成",
-    description: "快速生成二维码，支持自定义颜色、大小和中心图标",
+    title: "二维码工具",
+    description: "生成和解码二维码，支持自定义颜色、大小和中心图标",
     route: "/general/qrcode",
     color: "purple",
   },

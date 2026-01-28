@@ -12,6 +12,7 @@
     "@amap/amap-jsapi-loader": "^1.0.1",
     "@types/qrcode": "^1.5.6",
     "ace-builds": "^1.43.6",
+    "jsqr": "^1.4.0",
     "marked": "^17.0.1",
     "pinia": "^3.0.4",
     "qrcode": "^1.5.4",
