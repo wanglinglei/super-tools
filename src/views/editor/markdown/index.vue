@@ -190,6 +190,7 @@ import SvgIcon from '@/components/svgIcon/SvgIcon.vue';
 import FormatSvg from './components/formatSvg.vue';
 import MessageToast from '@/components/Message/MessageToast.vue';
 import { useMessage } from '@/composables/useMessage';
+import { downloadFile } from '@/utils/file';
 
 // 编辑器引用
 const editorRef = ref<HTMLElement | null>(null);
@@ -521,16 +522,16 @@ const saveFile = () => {
     return;
   }
 
-  const blob = new Blob([content], { type: 'text/markdown' });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement('a');
-  link.href = url;
-  link.download = `document-${Date.now()}.md`;
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-  URL.revokeObjectURL(url);
-  showMessage('文件已保存', 'success');
+  try {
+    // 使用统一的 downloadFile 方法，自动识别文本类型
+    downloadFile(content, {
+      filename: 'document.md',
+      addTimestamp: true
+    });
+    showMessage('文件已保存', 'success');
+  } catch (error) {
+    showMessage((error as Error).message, 'error');
+  }
 };
 
 // 复制内容

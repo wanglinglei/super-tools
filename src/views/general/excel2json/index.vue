@@ -259,6 +259,7 @@ import * as XLSX from 'xlsx';
 import SvgIcon from '@/components/svgIcon/SvgIcon.vue';
 import MessageToast from '@/components/Message/MessageToast.vue';
 import { useMessage } from '@/composables/useMessage';
+import { downloadFile } from '@/utils/file';
 
 // 文件相关
 const fileInputRef = ref<HTMLInputElement | null>(null);
@@ -410,14 +411,19 @@ const downloadJson = () => {
     return;
   }
   
-  const blob = new Blob([jsonOutput.value], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement('a');
-  link.download = `${fileName.value.replace(/\.[^/.]+$/, '')}_${Date.now()}.json`;
-  link.href = url;
-  link.click();
-  URL.revokeObjectURL(url);
-  showMessage('下载成功');
+  try {
+    const baseFilename = fileName.value.replace(/\.[^/.]+$/, '');
+    
+    // 解析 JSON 字符串为对象，使用统一的 downloadFile 方法自动序列化
+    const data = JSON.parse(jsonOutput.value);
+    downloadFile(data, {
+      filename: `${baseFilename}.json`,
+      addTimestamp: true
+    });
+    showMessage('下载成功');
+  } catch (error) {
+    showMessage((error as Error).message, 'error');
+  }
 };
 
 // 格式化字节

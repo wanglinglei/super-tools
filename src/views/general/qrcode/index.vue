@@ -355,6 +355,7 @@ import MessageToast from '@/components/Message/MessageToast.vue';
 import TabBar from '@/components/TabBar/TabBar.vue';
 import type { Tab } from '@/components/TabBar/TabBar.vue';
 import { useMessage } from '@/composables/useMessage';
+import { downloadFile } from '@/utils/file';
 
 // 消息提示
 const { message, showMessage } = useMessage();
@@ -481,11 +482,16 @@ const downloadQRCode = () => {
     return;
   }
 
-  const link = document.createElement('a');
-  link.download = `qrcode_${Date.now()}.png`;
-  link.href = qrcodeDataUrl.value;
-  link.click();
-  showMessage('下载成功');
+  try {
+    // 使用统一的 downloadFile 方法，自动识别 Data URL 类型
+    downloadFile(qrcodeDataUrl.value, {
+      filename: 'qrcode.png',
+      addTimestamp: true
+    });
+    showMessage('下载成功');
+  } catch (error) {
+    showMessage((error as Error).message, 'error');
+  }
 };
 
 // 复制二维码图片
