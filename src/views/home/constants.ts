@@ -61,32 +61,40 @@ export const mapTools: Tool[] = [
 ];
 
 /**
- * 即将推出的工具列表
+ * 通用工具列表
  */
-export const comingTools: ComingTool[] = [
-  // {
-  //   name: "html-editor",
-  //   icon: "</>",
-  //   title: "HTML 编辑器",
-  //   description: "在线编辑和预览 HTML 代码",
-  // },
-  // {
-  //   name: "sql-formatter",
-  //   icon: "SQL",
-  //   title: "SQL 格式化",
-  //   description: "格式化和美化 SQL 语句",
-  // },
-  // {
-  //   name: "unit-converter",
-  //   icon: "🔄",
-  //   title: "单位转换",
-  //   description: "长度、重量、温度等单位快速转换",
-  // },
+export const generalTools: Tool[] = [
   {
     name: "timestamp",
     icon: "⏰",
     title: "时间戳转换",
-    description: "时间戳与日期时间互相转换",
+    description: "时间戳与日期时间互相转换，支持秒和毫秒，提供快捷预设",
+    route: "/general/timestamp",
+    color: "yellow",
+  },
+];
+
+/**
+ * 即将推出的工具列表
+ */
+export const comingTools: ComingTool[] = [
+  {
+    name: "html-editor",
+    icon: "</>",
+    title: "HTML 编辑器",
+    description: "在线编辑和预览 HTML 代码",
+  },
+  {
+    name: "sql-formatter",
+    icon: "SQL",
+    title: "SQL 格式化",
+    description: "格式化和美化 SQL 语句",
+  },
+  {
+    name: "unit-converter",
+    icon: "🔄",
+    title: "单位转换",
+    description: "长度、重量、温度等单位快速转换",
   },
   {
     name: "qrcode",
@@ -99,5 +107,11 @@ export const comingTools: ComingTool[] = [
     icon: "🎨",
     title: "颜色选择器",
     description: "RGB、HEX、HSL 等颜色格式转换",
+  },
+  {
+    name: "base64",
+    icon: "🔐",
+    title: "Base64 编解码",
+    description: "文本和图片的 Base64 编码解码",
   },
 ];

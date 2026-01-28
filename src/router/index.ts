@@ -39,6 +39,14 @@ const router = createRouter({
         title: 'Markdown 编辑器',
       },
     },
+    {
+      path: '/general/timestamp',
+      name: 'general-timestamp',
+      component: () => import('../views/general/timestamp/index.vue'),
+      meta: {
+        title: '时间戳转换',
+      },
+    },
   ],
 })
 

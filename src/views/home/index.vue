@@ -49,8 +49,27 @@
           </div>
         </section>
 
-        <!-- 敬请期待 -->
+        <!-- 通用工具 -->
         <section>
+          <div class="flex items-center mb-6">
+            <div class="w-1 h-8 bg-yellow-500 rounded mr-3"></div>
+            <h2 class="text-2xl font-bold text-gray-800">🔧 通用工具</h2>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <ToolCard
+              v-for="tool in generalTools"
+              :key="tool.name"
+              :icon="tool.icon"
+              :title="tool.title"
+              :description="tool.description"
+              :route="tool.route"
+              :color="tool.color"
+            />
+          </div>
+        </section>
+
+        <!-- 敬请期待 -->
+        <section v-if="comingTools.length > 0">
           <div class="flex items-center mb-6">
             <div class="w-1 h-8 bg-purple-500 rounded mr-3"></div>
             <h2 class="text-2xl font-bold text-gray-800">🚀 更多工具</h2>
@@ -78,7 +97,7 @@
 <script setup lang="ts">
 import ToolCard from "./components/ToolCard.vue";
 import ComingSoonCard from "./components/ComingSoonCard.vue";
-import { editorTools, mapTools, comingTools } from "./constants";
+import { editorTools, mapTools, generalTools, comingTools } from "./constants";
 </script>
 
 <style scoped>
