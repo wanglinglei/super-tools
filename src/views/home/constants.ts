@@ -98,6 +98,19 @@ export const generalTools: Tool[] = [
   },
 ];
 
+/**
+ * 编码工具列表
+ */
+export const codeTools: Tool[] = [
+  {
+    name: "regex-tester",
+    icon: "🔍",
+    title: "正则测试",
+    description: "在线测试和调试正则表达式，支持匹配结果预览和常用正则模板",
+    routeName: "code-regex",
+    color: "indigo",
+  },
+];
 
 /**
  * 即将推出的工具列表
@@ -126,12 +139,6 @@ export const comingTools: ComingTool[] = [
     icon: "🔐",
     title: "Base64 编解码",
     description: "文本和图片的 Base64 编码解码",
-  },
-  {
-    name: "regex-tester",
-    icon: "🔍",
-    title: "正则测试",
-    description: "在线测试和调试正则表达式",
   },
 ];
 
@@ -174,6 +181,13 @@ export const toolSections: ToolSection[] = [
     accentColor: 'green',
     cardType: 'tool',
     tools: mapTools,
+  },
+  {
+    id: 'code',
+    title: '💻 编码工具',
+    accentColor: 'indigo',
+    cardType: 'tool',
+    tools: codeTools,
   },
   {
     id: 'general',

@@ -72,6 +72,14 @@ const router = createRouter({
         title: '颜色转换',
       },
     },
+    {
+      path: '/code/regex',
+      name: ROUTER_NAME.CODE_REGEX,
+      component: () => import('../views/code/regex/index.vue'),
+      meta: {
+        title: '正则测试',
+      },
+    },
   ],
 })
 

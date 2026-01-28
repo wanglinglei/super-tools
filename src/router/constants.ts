@@ -8,4 +8,5 @@ export const ROUTER_NAME = {
   GENERAL_QRCODE: 'general-qrcode',
   GENERAL_EXCEL2JSON: 'general-excel2json',
   GENERAL_COLOR: 'general-color',
+  CODE_REGEX: 'code-regex',
 };
