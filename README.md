@@ -1,6 +1,6 @@
 # Super Tools - 超级工具集
 
-> 一个基于 Vue 3 + TypeScript 的在线工具集合，提供 JSON 编辑器、Markdown 编辑器、地图工具等实用功能。
+> 一个基于 Vue 3 + TypeScript 的在线工具集合，提供编辑器、地图、通用工具等 10+ 实用功能。
 
 ## ✨ 功能特性
 
@@ -36,6 +36,44 @@
 - ✅ 可视化连线展示
 - ✅ 自动视野适配
 
+#### 天气查询
+- ✅ 点击地图查询任意位置天气
+- ✅ 显示实时天气信息（温度、天气、风向、湿度等）
+- ✅ 提供未来4天天气预报
+- ✅ 地理位置智能识别
+
+### 🔧 通用工具
+
+#### 时间戳转换
+- ✅ 实时显示当前时间（秒、毫秒、格式化）
+- ✅ 时间戳转日期时间
+- ✅ 日期时间转时间戳
+- ✅ 快捷预设（当前时间、昨天、明天、一周前/后等）
+
+#### 二维码工具
+- ✅ 二维码生成（支持文本、链接）
+- ✅ 二维码解码（上传图片识别）
+- ✅ 自定义颜色（前景色、背景色、预设色板）
+- ✅ 自定义尺寸和容错级别
+- ✅ 自定义中心图标
+- ✅ 一键下载和复制
+
+#### Excel 转 JSON
+- ✅ 支持 `.xlsx`、`.xls` 文件上传
+- ✅ 自动识别 Excel 字段
+- ✅ 自定义选择需要转换的字段
+- ✅ 实时数据预览（表格形式）
+- ✅ JSON 格式化和压缩
+- ✅ 一键复制和下载
+
+#### 颜色转换
+- ✅ 支持 HEX、RGB、HSL、HSV 格式互转
+- ✅ 原生颜色选择器
+- ✅ 全局透明度控制（Alpha 通道）
+- ✅ 实时颜色预览
+- ✅ 一键复制各格式结果
+- ✅ 配置化架构，易于扩展
+
 ## 🛠️ 技术栈
 
 ### 核心框架
@@ -51,6 +89,9 @@
 - **Ace Editor** - 强大的代码编辑器
 - **Marked** - Markdown 解析和渲染
 - **高德地图 API** - 地图服务
+- **QRCode** - 二维码生成
+- **jsQR** - 二维码解码
+- **XLSX** - Excel 文件处理
 - **Vue Router** - 路由管理
 - **Pinia** - 状态管理
 
@@ -65,24 +106,65 @@
 super-tools/
 ├── src/
 │   ├── assets/              # 静态资源
+│   │   └── svg/            # SVG 图标资源
 │   ├── components/          # 全局组件
-│   │   ├── SvgIcon.vue     # 通用 SVG 图标组件
-│   │   └── SvgIcon.README.md
+│   │   ├── svgIcon/        # SVG 图标组件
+│   │   │   ├── SvgIcon.vue
+│   │   │   └── README.md
+│   │   ├── Message/        # 消息提示组件
+│   │   │   ├── MessageToast.vue
+│   │   │   └── README.md
+│   │   └── TabBar/         # Tab 切换组件
+│   │       ├── TabBar.vue
+│   │       └── README.md
+│   ├── composables/         # 组合式函数
+│   │   └── useMessage.ts
 │   ├── router/              # 路由配置
 │   │   └── index.ts
 │   ├── types/               # TypeScript 类型定义
 │   │   └── amap.d.ts
 │   ├── views/               # 页面视图
 │   │   ├── home/           # 首页
+│   │   │   ├── index.vue
+│   │   │   └── constants.ts
 │   │   ├── editor/         # 编辑器工具
 │   │   │   ├── json/       # JSON 编辑器
+│   │   │   │   ├── index.vue
+│   │   │   │   └── README.md
 │   │   │   └── markdown/   # Markdown 编辑器
-│   │   │       └── components/  # Markdown 专用组件
+│   │   │       ├── index.vue
+│   │   │       ├── README.md
+│   │   │       └── components/
 │   │   │           └── formatSvg.vue
-│   │   └── map/            # 地图工具
-│   │       ├── common/     # 地图公共模块
-│   │       │   └── BaseMap.ts
-│   │       └── distance/   # 距离计算
+│   │   ├── map/            # 地图工具
+│   │   │   ├── common/     # 地图公共模块
+│   │   │   │   ├── BaseMap.ts
+│   │   │   │   └── README.md
+│   │   │   ├── distance/   # 距离计算
+│   │   │   │   ├── index.vue
+│   │   │   │   └── README.md
+│   │   │   └── weather/    # 天气查询
+│   │   │       ├── index.vue
+│   │   │       └── README.md
+│   │   └── general/        # 通用工具
+│   │       ├── timestamp/  # 时间戳转换
+│   │       │   ├── index.vue
+│   │       │   └── README.md
+│   │       ├── qrcode/     # 二维码工具
+│   │       │   ├── index.vue
+│   │       │   └── README.md
+│   │       ├── excel2json/ # Excel 转 JSON
+│   │       │   ├── index.vue
+│   │       │   └── README.md
+│   │       └── color/      # 颜色转换
+│   │           ├── index.vue
+│   │           ├── constants.ts
+│   │           ├── transform.ts
+│   │           ├── transform.md
+│   │           ├── README.md
+│   │           └── components/
+│   │               ├── ColorFormatCard.vue
+│   │               └── README.md
 │   ├── App.vue             # 根组件
 │   ├── main.ts             # 应用入口
 │   └── style.css           # 全局样式
@@ -147,75 +229,34 @@ export default defineConfig({
 
 ## 📖 功能使用说明
 
-### JSON 编辑器
+### 📝 编辑器工具
 
-**路由**: `/tools/editor/json`
+| 工具名称 | 图标 | 功能说明 | 路由 |
+|---------|------|----------|------|
+| JSON 编辑器 | { } | 在线编辑、格式化、校验 JSON 数据，支持智能修复常见错误 | `/tools/editor/json` |
+| Markdown 编辑器 | M↓ | 实时预览的 Markdown 编辑器，支持分屏和丰富的格式工具栏 | `/tools/editor/markdown` |
 
-**功能说明**:
-1. **修复 JSON**: 自动修复常见错误
-   - 移除尾部逗号
-   - 给键添加双引号
-   - 将单引号替换为双引号
-   - 将 `undefined` 转换为 `null`
+### 🗺️ 地图工具
 
-2. **校验 JSON**: 验证 JSON 格式是否正确
+| 工具名称 | 图标 | 功能说明 | 路由 |
+|---------|------|----------|------|
+| 距离计算 | 📏 | 基于高德地图计算两点间的直线距离，支持点击选点和手动输入 | `/tools/map/distance` |
+| 天气查询 | 🌤️ | 点击地图任意位置查询该区域的实时天气和未来4天预报 | `/tools/map/weather` |
 
-3. **上传文件**: 支持 `.json` 文件导入
+### 🔧 通用工具
 
-4. **保存文件**: 将当前内容保存为 JSON 文件
+| 工具名称 | 图标 | 功能说明 | 路由 |
+|---------|------|----------|------|
+| 时间戳转换 | ⏰ | 时间戳与日期时间互相转换，支持秒和毫秒，提供快捷预设 | `/tools/general/timestamp` |
+| 二维码工具 | 📱 | 生成和解码二维码，支持自定义颜色、大小和中心图标 | `/tools/general/qrcode` |
+| Excel 转 JSON | 📊 | 将 Excel 文件转换为 JSON 格式，支持自定义选择字段 | `/tools/general/excel2json` |
+| 颜色转换 | 🎨 | 支持 RGB、HEX、HSL、HSV 等颜色格式的相互转换 | `/tools/general/color` |
 
-5. **复制数据**: 一键复制到剪贴板
+## 🎨 组件系统
 
-6. **清空内容**: 清除编辑器所有内容
+### 全局图标组件 (SvgIcon)
 
-### Markdown 编辑器
-
-**路由**: `/tools/editor/markdown`
-
-**功能说明**:
-1. **格式快捷按钮**:
-   - **B** (加粗): 选中文本后自动添加 `**`
-   - **I** (斜体): 选中文本后自动添加 `*`
-   - **H** (标题): 添加 `##` 前缀
-   - **引用**: 添加 `>` 前缀
-   - **代码**: 添加反引号
-   - **列表**: 添加 `-` 或 `1.` 前缀
-   - **链接**: 自动生成 `[文本](url)` 格式
-   - **图片**: 自动生成 `![文本](url)` 格式
-   - **表格**: 插入表格模板
-
-2. **显示模式**:
-   - **编辑**: 仅显示编辑器（默认）
-   - **分屏**: 同时显示编辑器和预览
-   - **预览**: 仅显示 Markdown 渲染结果
-
-3. **文件操作**:
-   - 支持 `.md` 和 `.markdown` 文件导入
-   - 保存为 `.md` 文件
-   - 一键复制和清空
-
-### 地图距离计算
-
-**路由**: `/tools/map/distance`
-
-**使用步骤**:
-1. 点击地图选择起点（第一次点击）
-2. 点击地图选择终点（第二次点击）
-3. 自动显示两点间的直线距离
-4. 可手动输入经纬度坐标
-5. 点击"清除"按钮重置坐标
-
-**功能特点**:
-- 实时距离计算
-- 可视化连线展示
-- 自动调整地图视野
-- 支持手动输入坐标
-
-## 🎨 图标系统
-
-### 全局图标组件
-
-位置: `src/components/SvgIcon.vue`
+位置: `src/components/svgIcon/SvgIcon.vue`
 
 **使用方式**:
 ```vue
@@ -224,6 +265,28 @@ export default defineConfig({
 ```
 
 **可用图标**: repair, check, upload, download, copy, trash, eye, format, split
+
+### 消息提示组件 (MessageToast)
+
+位置: `src/components/Message/MessageToast.vue`
+
+**使用方式**:
+```vue
+<MessageToast :visible="message.show" :text="message.text" :type="message.type" />
+```
+
+配合 `useMessage` 组合式函数使用，提供统一的消息提示功能。
+
+### Tab 切换组件 (TabBar)
+
+位置: `src/components/TabBar/TabBar.vue`
+
+**使用方式**:
+```vue
+<TabBar v-model="activeTab" :tabs="tabs" />
+```
+
+用于二维码工具等需要 Tab 切换的场景。
 
 ### Markdown 格式图标
 
@@ -235,10 +298,12 @@ export default defineConfig({
 
 ### 添加新工具
 
-1. 在 `src/views/` 下创建功能目录
+1. 在 `src/views/` 对应分类下创建功能目录（`editor/`、`map/`、`general/`）
 2. 创建页面组件 `index.vue`
-3. 在 `src/router/index.ts` 添加路由
-4. 更新本 README 文档
+3. 在 `src/router/index.ts` 添加路由配置
+4. 在 `src/views/home/constants.ts` 添加工具配置
+5. 创建工具说明文档 `README.md`
+6. 更新本 README 文档
 
 ### 代码规范
 
@@ -261,12 +326,16 @@ export default defineConfig({
 
 ## 📝 TODO
 
+- [x] ~~添加时间戳转换工具~~
+- [x] ~~添加二维码生成工具~~
+- [x] ~~添加 Excel 转 JSON 工具~~
+- [x] ~~添加颜色转换工具~~
+- [x] ~~添加天气查询工具~~
 - [ ] 添加更多编辑器工具（SQL、CSS、HTML 等）
 - [ ] 地图工具扩展（面积计算、路径规划等）
 - [ ] 添加单位转换工具
-- [ ] 添加时间戳转换工具
 - [ ] 添加正则表达式测试工具
-- [ ] 添加二维码生成工具
+- [ ] 添加 Base64 编解码工具
 - [ ] 支持主题切换（暗色模式）
 - [ ] 添加工具收藏功能
 
