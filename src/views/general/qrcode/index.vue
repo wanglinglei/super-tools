@@ -27,15 +27,7 @@
     </div>
 
     <!-- 消息提示 -->
-    <Transition name="fade">
-      <div
-        v-if="message.show"
-        class="fixed top-20 left-1/2 transform -translate-x-1/2 z-50 px-4 py-2 rounded-lg shadow-lg text-sm font-medium"
-        :class="message.type === 'success' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'"
-      >
-        {{ message.text }}
-      </div>
-    </Transition>
+    <MessageToast :visible="message.show" :text="message.text" :type="message.type" />
 
     <!-- 主内容区 -->
     <div class="flex-1 overflow-auto p-4">
@@ -251,9 +243,14 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, computed, onMounted } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import QRCode from 'qrcode';
 import SvgIcon from '@/components/svgIcon/SvgIcon.vue';
+import MessageToast from '@/components/Message/MessageToast.vue';
+import { useMessage } from '@/composables/useMessage';
+
+// 消息提示
+const { message, showMessage } = useMessage();
 
 // 输入内容
 const inputText = ref('https://example.com');
@@ -275,15 +272,6 @@ const qrcodeDataUrl = ref('');
 // 计算图标显示大小
 const iconDisplaySize = computed(() => Math.round(qrSize.value * iconSizeRatio.value));
 
-// 消息提示
-const message = reactive({
-  show: false,
-  text: '',
-  type: 'success' as 'success' | 'error',
-});
-
-let messageTimer: ReturnType<typeof setTimeout> | null = null;
-
 // 颜色预设
 const colorPresets = [
   { name: '经典黑白', fg: '#000000', bg: '#ffffff' },
@@ -295,19 +283,6 @@ const colorPresets = [
   { name: '粉色', fg: '#db2777', bg: '#fdf2f8' },
   { name: '深色模式', fg: '#ffffff', bg: '#1f2937' },
 ];
-
-// 显示消息
-const showMessage = (text: string, type: 'success' | 'error' = 'success') => {
-  if (messageTimer) {
-    clearTimeout(messageTimer);
-  }
-  message.text = text;
-  message.type = type;
-  message.show = true;
-  messageTimer = setTimeout(() => {
-    message.show = false;
-  }, 2000);
-};
 
 // 生成二维码
 const generateQRCode = async () => {
@@ -492,17 +467,6 @@ onMounted(() => {
 
 .tool-btn-icon:hover {
   color: #1f2937;
-}
-
-/* 消息动画 */
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.3s ease;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
 }
 
 /* 自定义滑块样式 */

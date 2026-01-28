@@ -54,15 +54,7 @@
     </div>
 
     <!-- 消息提示 -->
-    <Transition name="fade">
-      <div
-        v-if="message.show"
-        class="fixed top-20 left-1/2 transform -translate-x-1/2 z-50 px-4 py-2 rounded-lg shadow-lg text-sm font-medium"
-        :class="message.type === 'success' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'"
-      >
-        {{ message.text }}
-      </div>
-    </Transition>
+    <MessageToast :visible="message.show" :text="message.text" :type="message.type" />
 
     <!-- 编辑器容器 -->
     <div class="flex-1 overflow-hidden">
@@ -81,12 +73,14 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, reactive } from 'vue';
+import { ref, onMounted, onUnmounted } from 'vue';
 import * as ace from 'ace-builds';
 import 'ace-builds/src-noconflict/mode-json';
 import 'ace-builds/src-noconflict/theme-github';
 import 'ace-builds/src-noconflict/ext-language_tools';
 import SvgIcon from '@/components/svgIcon/SvgIcon.vue';
+import MessageToast from '@/components/Message/MessageToast.vue';
+import { useMessage } from '@/composables/useMessage';
 
 // 编辑器引用
 const editorRef = ref<HTMLElement | null>(null);
@@ -94,26 +88,7 @@ const fileInputRef = ref<HTMLInputElement | null>(null);
 let editor: ace.Ace.Editor | null = null;
 
 // 消息提示
-const message = reactive({
-  show: false,
-  text: '',
-  type: 'success' as 'success' | 'error',
-});
-
-let messageTimer: ReturnType<typeof setTimeout> | null = null;
-
-// 显示消息
-const showMessage = (text: string, type: 'success' | 'error' = 'success') => {
-  if (messageTimer) {
-    clearTimeout(messageTimer);
-  }
-  message.text = text;
-  message.type = type;
-  message.show = true;
-  messageTimer = setTimeout(() => {
-    message.show = false;
-  }, 2000);
-};
+const { message, showMessage } = useMessage();
 
 // 初始化编辑器
 const initEditor = () => {
@@ -299,9 +274,6 @@ onUnmounted(() => {
     editor.destroy();
     editor = null;
   }
-  if (messageTimer) {
-    clearTimeout(messageTimer);
-  }
 });
 </script>
 
@@ -334,16 +306,5 @@ onUnmounted(() => {
 
 :deep(.ace_gutter-active-line) {
   background: #e8e8e8 !important;
-}
-
-/* 消息动画 */
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.3s ease;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
 }
 </style>

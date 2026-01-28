@@ -27,15 +27,7 @@
     </div>
 
     <!-- 消息提示 -->
-    <Transition name="fade">
-      <div
-        v-if="message.show"
-        class="fixed top-20 left-1/2 transform -translate-x-1/2 z-50 px-4 py-2 rounded-lg shadow-lg text-sm font-medium"
-        :class="message.type === 'success' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'"
-      >
-        {{ message.text }}
-      </div>
-    </Transition>
+    <MessageToast :visible="message.show" :text="message.text" :type="message.type" />
 
     <!-- 主内容区 -->
     <div class="flex-1 overflow-auto p-4">
@@ -188,8 +180,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, reactive, computed } from 'vue';
+import { ref, onMounted, onUnmounted, computed } from 'vue';
 import SvgIcon from '@/components/svgIcon/SvgIcon.vue';
+import MessageToast from '@/components/Message/MessageToast.vue';
+import { useMessage } from '@/composables/useMessage';
 
 // 当前时间
 const currentTime = ref(Date.now());
@@ -220,13 +214,8 @@ const convertedTimestampSec = computed(() => Math.floor(convertedTimestamp.value
 const convertedTimestampMs = computed(() => convertedTimestamp.value);
 
 // 消息提示
-const message = reactive({
-  show: false,
-  text: '',
-  type: 'success' as 'success' | 'error',
-});
+const { message, showMessage } = useMessage();
 
-let messageTimer: ReturnType<typeof setTimeout> | null = null;
 let timeUpdateTimer: ReturnType<typeof setInterval> | null = null;
 
 // 快捷预设
@@ -240,19 +229,6 @@ const presets = [
   { label: '一个月前', value: () => new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) },
   { label: '一个月后', value: () => new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) },
 ];
-
-// 显示消息
-const showMessage = (text: string, type: 'success' | 'error' = 'success') => {
-  if (messageTimer) {
-    clearTimeout(messageTimer);
-  }
-  message.text = text;
-  message.type = type;
-  message.show = true;
-  messageTimer = setTimeout(() => {
-    message.show = false;
-  }, 2000);
-};
 
 // 刷新当前时间
 const refreshCurrentTime = () => {
@@ -383,9 +359,6 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
-  if (messageTimer) {
-    clearTimeout(messageTimer);
-  }
   if (timeUpdateTimer) {
     clearInterval(timeUpdateTimer);
   }
@@ -407,16 +380,5 @@ onUnmounted(() => {
 
 .tool-btn-icon:hover {
   color: #1f2937;
-}
-
-/* 消息动画 */
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.3s ease;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
 }
 </style>

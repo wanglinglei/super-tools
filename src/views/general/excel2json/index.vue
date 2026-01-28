@@ -43,15 +43,7 @@
     </div>
 
     <!-- 消息提示 -->
-    <Transition name="fade">
-      <div
-        v-if="message.show"
-        class="fixed top-20 left-1/2 transform -translate-x-1/2 z-50 px-4 py-2 rounded-lg shadow-lg text-sm font-medium"
-        :class="message.type === 'success' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'"
-      >
-        {{ message.text }}
-      </div>
-    </Transition>
+    <MessageToast :visible="message.show" :text="message.text" :type="message.type" />
 
     <!-- 主内容区 -->
     <div class="flex-1 overflow-auto p-4">
@@ -262,9 +254,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, reactive } from 'vue';
+import { ref, computed } from 'vue';
 import * as XLSX from 'xlsx';
 import SvgIcon from '@/components/svgIcon/SvgIcon.vue';
+import MessageToast from '@/components/Message/MessageToast.vue';
+import { useMessage } from '@/composables/useMessage';
 
 // 文件相关
 const fileInputRef = ref<HTMLInputElement | null>(null);
@@ -279,29 +273,10 @@ const formatJson = ref(true);
 const convertedCount = ref(0);
 
 // 消息提示
-const message = reactive({
-  show: false,
-  text: '',
-  type: 'success' as 'success' | 'error',
-});
-
-let messageTimer: ReturnType<typeof setTimeout> | null = null;
+const { message, showMessage } = useMessage();
 
 // 预览数据（前5行）
 const previewData = computed(() => excelData.value.slice(0, 5));
-
-// 显示消息
-const showMessage = (text: string, type: 'success' | 'error' = 'success') => {
-  if (messageTimer) {
-    clearTimeout(messageTimer);
-  }
-  message.text = text;
-  message.type = type;
-  message.show = true;
-  messageTimer = setTimeout(() => {
-    message.show = false;
-  }, 2000);
-};
 
 // 选择文件
 const selectFile = () => {
@@ -489,17 +464,6 @@ const clearAll = () => {
 
 .tool-btn-icon:hover {
   color: #1f2937;
-}
-
-/* 消息动画 */
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.3s ease;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
 }
 
 /* 表格样式 */

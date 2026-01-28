@@ -142,15 +142,7 @@
     </div>
 
     <!-- 消息提示 -->
-    <Transition name="fade">
-      <div
-        v-if="message.show"
-        class="fixed top-20 left-1/2 transform -translate-x-1/2 z-50 px-4 py-2 rounded-lg shadow-lg text-sm font-medium"
-        :class="message.type === 'success' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'"
-      >
-        {{ message.text }}
-      </div>
-    </Transition>
+    <MessageToast :visible="message.show" :text="message.text" :type="message.type" />
 
     <!-- 编辑器和预览区域 -->
     <div class="flex-1 overflow-hidden flex">
@@ -188,14 +180,16 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, reactive, computed } from 'vue';
+import { ref, onMounted, onUnmounted, computed } from 'vue';
 import * as ace from 'ace-builds';
 import 'ace-builds/src-noconflict/mode-markdown';
 import 'ace-builds/src-noconflict/theme-github';
 import 'ace-builds/src-noconflict/ext-language_tools';
 import { marked } from 'marked';
-import SvgIcon from '@/components/svgIcon/SvgIcon.vue'; 
+import SvgIcon from '@/components/svgIcon/SvgIcon.vue';
 import FormatSvg from './components/formatSvg.vue';
+import MessageToast from '@/components/Message/MessageToast.vue';
+import { useMessage } from '@/composables/useMessage';
 
 // 编辑器引用
 const editorRef = ref<HTMLElement | null>(null);
@@ -209,13 +203,7 @@ const showMode = ref<'edit' | 'preview' | 'split'>('edit');
 const markdownContent = ref('');
 
 // 消息提示
-const message = reactive({
-  show: false,
-  text: '',
-  type: 'success' as 'success' | 'error',
-});
-
-let messageTimer: ReturnType<typeof setTimeout> | null = null;
+const { message, showMessage } = useMessage();
 
 // 配置 marked
 marked.setOptions({
@@ -231,19 +219,6 @@ const renderedHtml = computed(() => {
     return `<p class="text-red-500">Markdown 解析错误: ${(e as Error).message}</p>`;
   }
 });
-
-// 显示消息
-const showMessage = (text: string, type: 'success' | 'error' = 'success') => {
-  if (messageTimer) {
-    clearTimeout(messageTimer);
-  }
-  message.text = text;
-  message.type = type;
-  message.show = true;
-  messageTimer = setTimeout(() => {
-    message.show = false;
-  }, 2000);
-};
 
 // 初始化编辑器
 const initEditor = () => {
@@ -774,16 +749,5 @@ onUnmounted(() => {
 
 .markdown-preview :deep(del) {
   text-decoration: line-through;
-}
-
-/* 消息动画 */
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.3s ease;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
 }
 </style>
