@@ -88,6 +88,14 @@ export const generalTools: Tool[] = [
     route: "/general/excel2json",
     color: "green",
   },
+  {
+    name: "color",
+    icon: "🎨",
+    title: "颜色转换",
+    description: "支持 RGB、HEX、HSL、HSV 等颜色格式的相互转换",
+    route: "/general/color",
+    color: "pink",
+  },
 ];
 
 /**
@@ -113,15 +121,15 @@ export const comingTools: ComingTool[] = [
     description: "长度、重量、温度等单位快速转换",
   },
   {
-    name: "color-picker",
-    icon: "🎨",
-    title: "颜色选择器",
-    description: "RGB、HEX、HSL 等颜色格式转换",
-  },
-  {
     name: "base64",
     icon: "🔐",
     title: "Base64 编解码",
     description: "文本和图片的 Base64 编码解码",
+  },
+  {
+    name: "regex-tester",
+    icon: "🔍",
+    title: "正则测试",
+    description: "在线测试和调试正则表达式",
   },
 ];

@@ -63,6 +63,14 @@ const router = createRouter({
         title: 'Excel 转 JSON',
       },
     },
+    {
+      path: '/general/color',
+      name: 'general-color',
+      component: () => import('../views/general/color/index.vue'),
+      meta: {
+        title: '颜色转换',
+      },
+    },
   ],
 })
 
