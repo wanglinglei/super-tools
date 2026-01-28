@@ -11,79 +11,36 @@
 
       <!-- 工具分类 -->
       <div class="space-y-12">
-        <!-- 编辑器工具 -->
-        <section>
-          <div class="flex items-center mb-6">
-            <div class="w-1 h-8 bg-blue-500 rounded mr-3"></div>
-            <h2 class="text-2xl font-bold text-gray-800">📝 编辑器工具</h2>
-          </div>
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <ToolSection
+          v-for="section in toolSections"
+          :key="section.id"
+          :title="section.title"
+          :accent-color="section.accentColor"
+        >
+          <!-- 工具卡片 -->
+          <template v-if="section.cardType === 'tool'">
             <ToolCard
-              v-for="tool in editorTools"
+              v-for="tool in section.tools"
               :key="tool.name"
               :icon="tool.icon"
               :title="tool.title"
               :description="tool.description"
-              :route="tool.route"
-              :color="tool.color"
+              :route="(tool as Tool).route"
+              :color="(tool as Tool).color"
             />
-          </div>
-        </section>
+          </template>
 
-        <!-- 地图工具 -->
-        <section>
-          <div class="flex items-center mb-6">
-            <div class="w-1 h-8 bg-green-500 rounded mr-3"></div>
-            <h2 class="text-2xl font-bold text-gray-800">🗺️ 地图工具</h2>
-          </div>
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <ToolCard
-              v-for="tool in mapTools"
-              :key="tool.name"
-              :icon="tool.icon"
-              :title="tool.title"
-              :description="tool.description"
-              :route="tool.route"
-              :color="tool.color"
-            />
-          </div>
-        </section>
-
-        <!-- 通用工具 -->
-        <section>
-          <div class="flex items-center mb-6">
-            <div class="w-1 h-8 bg-yellow-500 rounded mr-3"></div>
-            <h2 class="text-2xl font-bold text-gray-800">🔧 通用工具</h2>
-          </div>
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <ToolCard
-              v-for="tool in generalTools"
-              :key="tool.name"
-              :icon="tool.icon"
-              :title="tool.title"
-              :description="tool.description"
-              :route="tool.route"
-              :color="tool.color"
-            />
-          </div>
-        </section>
-
-        <!-- 敬请期待 -->
-        <section v-if="comingTools.length > 0">
-          <div class="flex items-center mb-6">
-            <div class="w-1 h-8 bg-purple-500 rounded mr-3"></div>
-            <h2 class="text-2xl font-bold text-gray-800">🚀 更多工具</h2>
-          </div>
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <!-- 敬请期待卡片 -->
+          <template v-else-if="section.cardType === 'coming' && section.tools.length > 0">
             <ComingSoonCard
-              v-for="tool in comingTools"
+              v-for="tool in section.tools"
               :key="tool.name"
               :icon="tool.icon"
               :title="tool.title"
               :description="tool.description"
             />
-          </div>
-        </section>
+          </template>
+        </ToolSection>
       </div>
 
       <!-- 页脚信息 -->
@@ -95,9 +52,10 @@
 </template>
 
 <script setup lang="ts">
+import ToolSection from "./components/ToolSection.vue";
 import ToolCard from "./components/ToolCard.vue";
 import ComingSoonCard from "./components/ComingSoonCard.vue";
-import { editorTools, mapTools, generalTools, comingTools } from "./constants";
+import { toolSections, type Tool } from "./constants";
 </script>
 
 <style scoped>

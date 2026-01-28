@@ -98,6 +98,7 @@ export const generalTools: Tool[] = [
   },
 ];
 
+
 /**
  * 即将推出的工具列表
  */
@@ -131,5 +132,61 @@ export const comingTools: ComingTool[] = [
     icon: "🔍",
     title: "正则测试",
     description: "在线测试和调试正则表达式",
+  },
+];
+
+/**
+ * 工具分类颜色类型
+ */
+export type SectionColor = 'blue' | 'green' | 'yellow' | 'purple' | 'red' | 'pink' | 'indigo';
+
+/**
+ * 工具分类卡片类型
+ */
+export type CardType = 'tool' | 'coming';
+
+/**
+ * 工具分类配置接口
+ */
+export interface ToolSection {
+  id: string;
+  title: string;
+  accentColor: SectionColor;
+  cardType: CardType;
+  tools: Tool[] | ComingTool[];
+}
+
+/**
+ * 工具分类配置列表
+ * 用于在首页通过 v-for 渲染各个工具分类
+ */
+export const toolSections: ToolSection[] = [
+  {
+    id: 'editor',
+    title: '📝 编辑器工具',
+    accentColor: 'blue',
+    cardType: 'tool',
+    tools: editorTools,
+  },
+  {
+    id: 'map',
+    title: '🗺️ 地图工具',
+    accentColor: 'green',
+    cardType: 'tool',
+    tools: mapTools,
+  },
+  {
+    id: 'general',
+    title: '🔧 通用工具',
+    accentColor: 'yellow',
+    cardType: 'tool',
+    tools: generalTools,
+  },
+  {
+    id: 'coming',
+    title: '🚀 更多工具',
+    accentColor: 'purple',
+    cardType: 'coming',
+    tools: comingTools,
   },
 ];
