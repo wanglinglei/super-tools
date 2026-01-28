@@ -55,6 +55,14 @@ const router = createRouter({
         title: '二维码生成',
       },
     },
+    {
+      path: '/general/excel2json',
+      name: 'general-excel2json',
+      component: () => import('../views/general/excel2json/index.vue'),
+      meta: {
+        title: 'Excel 转 JSON',
+      },
+    },
   ],
 })
 

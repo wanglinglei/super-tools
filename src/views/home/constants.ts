@@ -80,6 +80,14 @@ export const generalTools: Tool[] = [
     route: "/general/qrcode",
     color: "purple",
   },
+  {
+    name: "excel2json",
+    icon: "📊",
+    title: "Excel 转 JSON",
+    description: "将 Excel 文件转换为 JSON 格式，支持自定义选择字段",
+    route: "/general/excel2json",
+    color: "green",
+  },
 ];
 
 /**
