@@ -25,7 +25,7 @@
               :icon="tool.icon"
               :title="tool.title"
               :description="tool.description"
-              :route="(tool as Tool).route"
+              :route-name="(tool as Tool).routeName"
               :color="(tool as Tool).color"
             />
           </template>

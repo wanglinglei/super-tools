@@ -58,7 +58,7 @@ interface Props {
   icon: string;
   title: string;
   description: string;
-  route: string;
+  routeName: string;
   color?: 'blue' | 'indigo' | 'green' | 'purple' | 'pink' | 'yellow';
 }
 
@@ -69,7 +69,7 @@ const props = withDefaults(defineProps<Props>(), {
 const router = useRouter();
 
 const navigateTo = () => {
-  router.push(props.route);
+  router.push({ name: props.routeName });
 };
 
 // 根据颜色生成不同的样式类

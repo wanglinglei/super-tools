@@ -1,11 +1,11 @@
 export type ToolColor = "blue" | "indigo" | "green" | "purple" | "pink" | "yellow";
-
+import { ROUTER_NAME } from '@/router/constants';
 export interface Tool {
   name: string;
   icon: string;
   title: string;
   description: string;
-  route: string;
+  routeName: string;
   color: ToolColor;
 }
 
@@ -25,7 +25,7 @@ export const editorTools: Tool[] = [
     icon: "{ }",
     title: "JSON 编辑器",
     description: "在线编辑、格式化、校验 JSON 数据，支持智能修复常见错误",
-    route: "/editor/json",
+    routeName: ROUTER_NAME.EDITOR_JSON,
     color: "blue",
   },
   {
@@ -33,7 +33,7 @@ export const editorTools: Tool[] = [
     icon: "M↓",
     title: "Markdown 编辑器",
     description: "实时预览的 Markdown 编辑器，支持分屏和丰富的格式工具栏",
-    route: "/editor/markdown",
+    routeName: ROUTER_NAME.EDITOR_MARKDOWN,
     color: "indigo",
   },
 ];
@@ -47,7 +47,7 @@ export const mapTools: Tool[] = [
     icon: "📏",
     title: "距离计算",
     description: "基于高德地图计算两点间的直线距离，支持点击选点和手动输入",
-    route: "/map/distance",
+    routeName: ROUTER_NAME.MAP_DISTANCE,
     color: "green",
   },
   {
@@ -55,7 +55,7 @@ export const mapTools: Tool[] = [
     icon: "🌤️",
     title: "天气查询",
     description: "点击地图任意位置查询该区域的实时天气和未来4天预报",
-    route: "/map/weather",
+    routeName: ROUTER_NAME.MAP_WEATHER,
     color: "blue",
   },
 ];
@@ -69,7 +69,7 @@ export const generalTools: Tool[] = [
     icon: "⏰",
     title: "时间戳转换",
     description: "时间戳与日期时间互相转换，支持秒和毫秒，提供快捷预设",
-    route: "/general/timestamp",
+    routeName: ROUTER_NAME.GENERAL_TIMESTAMP,
     color: "yellow",
   },
   {
@@ -77,7 +77,7 @@ export const generalTools: Tool[] = [
     icon: "📱",
     title: "二维码工具",
     description: "生成和解码二维码，支持自定义颜色、大小和中心图标",
-    route: "/general/qrcode",
+    routeName: ROUTER_NAME.GENERAL_QRCODE,
     color: "purple",
   },
   {
@@ -85,7 +85,7 @@ export const generalTools: Tool[] = [
     icon: "📊",
     title: "Excel 转 JSON",
     description: "将 Excel 文件转换为 JSON 格式，支持自定义选择字段",
-    route: "/general/excel2json",
+    routeName: ROUTER_NAME.GENERAL_EXCEL2JSON,
     color: "green",
   },
   {
@@ -93,7 +93,7 @@ export const generalTools: Tool[] = [
     icon: "🎨",
     title: "颜色转换",
     description: "支持 RGB、HEX、HSL、HSV 等颜色格式的相互转换",
-    route: "/general/color",
+    routeName: ROUTER_NAME.GENERAL_COLOR,
     color: "pink",
   },
 ];
