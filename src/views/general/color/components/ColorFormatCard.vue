@@ -48,7 +48,6 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
 import SvgIcon from '@/components/svgIcon/SvgIcon.vue';
 
 /**
