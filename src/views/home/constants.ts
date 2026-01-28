@@ -72,6 +72,14 @@ export const generalTools: Tool[] = [
     route: "/general/timestamp",
     color: "yellow",
   },
+  {
+    name: "qrcode",
+    icon: "📱",
+    title: "二维码生成",
+    description: "快速生成二维码，支持自定义颜色、大小和中心图标",
+    route: "/general/qrcode",
+    color: "purple",
+  },
 ];
 
 /**
@@ -95,12 +103,6 @@ export const comingTools: ComingTool[] = [
     icon: "🔄",
     title: "单位转换",
     description: "长度、重量、温度等单位快速转换",
-  },
-  {
-    name: "qrcode",
-    icon: "📱",
-    title: "二维码生成",
-    description: "快速生成各种类型的二维码",
   },
   {
     name: "color-picker",

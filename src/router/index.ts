@@ -47,6 +47,14 @@ const router = createRouter({
         title: '时间戳转换',
       },
     },
+    {
+      path: '/general/qrcode',
+      name: 'general-qrcode',
+      component: () => import('../views/general/qrcode/index.vue'),
+      meta: {
+        title: '二维码生成',
+      },
+    },
   ],
 })
 

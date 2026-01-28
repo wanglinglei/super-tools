@@ -10,9 +10,11 @@
   },
   "dependencies": {
     "@amap/amap-jsapi-loader": "^1.0.1",
+    "@types/qrcode": "^1.5.6",
     "ace-builds": "^1.43.6",
     "marked": "^17.0.1",
     "pinia": "^3.0.4",
+    "qrcode": "^1.5.4",
     "vue": "^3.5.24",
     "vue-router": "^4.6.4"
   },
