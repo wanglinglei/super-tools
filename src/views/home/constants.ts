@@ -110,6 +110,14 @@ export const codeTools: Tool[] = [
     routeName: "code-regex",
     color: "indigo",
   },
+  {
+    name: "url-parser",
+    icon: "🔗",
+    title: "URL 编解码",
+    description: "URL 编码和解码工具，支持多种编码方式和常用示例",
+    routeName: "code-url-parser",
+    color: "blue",
+  },
 ];
 
 /**

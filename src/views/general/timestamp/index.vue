@@ -184,6 +184,7 @@ import { ref, onMounted, onUnmounted, computed } from 'vue';
 import SvgIcon from '@/components/svgIcon/SvgIcon.vue';
 import MessageToast from '@/components/Message/MessageToast.vue';
 import { useMessage } from '@/composables/useMessage';
+import { copyToClipboard } from '@/utils';
 
 // 当前时间
 const currentTime = ref(Date.now());
@@ -243,10 +244,10 @@ const copyTimestamp = async () => {
 
 // 复制文本
 const copyText = async (text: string) => {
-  try {
-    await navigator.clipboard.writeText(text);
+  const success = await copyToClipboard(text);
+  if (success) {
     showMessage('已复制到剪贴板');
-  } catch {
+  } else {
     showMessage('复制失败', 'error');
   }
 };

@@ -226,6 +226,7 @@ import { ref, computed } from 'vue';
 import SvgIcon from '@/components/svgIcon/SvgIcon.vue';
 import MessageToast from '@/components/Message/MessageToast.vue';
 import { useMessage } from '@/composables/useMessage';
+import { copyToClipboard } from '@/utils';
 import { REGEX_FLAGS, COMMON_REGEX, REGEX_SYMBOLS, type CommonRegex } from './constants';
 
 const { message, showMessage } = useMessage();
@@ -340,12 +341,13 @@ const copyMatches = () => {
 };
 
 // 复制文本
-const copyText = (text: string) => {
-  navigator.clipboard.writeText(text).then(() => {
+const copyText = async (text: string) => {
+  const success = await copyToClipboard(text);
+  if (success) {
     showMessage('已复制到剪贴板', 'success');
-  }).catch(() => {
+  } else {
     showMessage('复制失败', 'error');
-  });
+  }
 };
 
 // 清空所有

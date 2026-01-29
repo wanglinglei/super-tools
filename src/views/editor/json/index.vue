@@ -81,7 +81,7 @@ import 'ace-builds/src-noconflict/ext-language_tools';
 import SvgIcon from '@/components/svgIcon/SvgIcon.vue';
 import MessageToast from '@/components/Message/MessageToast.vue';
 import { useMessage } from '@/composables/useMessage';
-import { downloadFile } from '@/utils/file';
+import { downloadFile, copyToClipboard } from '@/utils';
 
 // 编辑器引用
 const editorRef = ref<HTMLElement | null>(null);
@@ -251,10 +251,10 @@ const copyContent = async () => {
     return;
   }
 
-  try {
-    await navigator.clipboard.writeText(content);
+  const success = await copyToClipboard(content);
+  if (success) {
     showMessage('已复制到剪贴板', 'success');
-  } catch {
+  } else {
     showMessage('复制失败', 'error');
   }
 };

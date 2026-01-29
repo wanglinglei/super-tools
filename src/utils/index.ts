@@ -7,7 +7,7 @@
  */
 
 
-// 推荐使用的核心方法
+// 文件下载相关
 export { downloadFile } from './file';
 
 // 快捷方法（语法糖）
@@ -17,3 +17,11 @@ export {
   downloadText,
   downloadImage,
 } from './file';
+
+// 剪贴板相关
+export {
+  copyToClipboard,
+  copyWithCallback,
+  isClipboardSupported,
+  readFromClipboard,
+} from './clipboard';

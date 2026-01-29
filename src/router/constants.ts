@@ -9,4 +9,5 @@ export const ROUTER_NAME = {
   GENERAL_EXCEL2JSON: 'general-excel2json',
   GENERAL_COLOR: 'general-color',
   CODE_REGEX: 'code-regex',
+  CODE_URL_PARSER: 'code-url-parser',
 };

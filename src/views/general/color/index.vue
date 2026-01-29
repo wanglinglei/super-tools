@@ -104,6 +104,7 @@ import SvgIcon from '@/components/svgIcon/SvgIcon.vue';
 import MessageToast from '@/components/Message/MessageToast.vue';
 import ColorFormatCard from './components/ColorFormatCard.vue';
 import { useMessage } from '@/composables/useMessage';
+import { copyToClipboard } from '@/utils';
 import { COLOR_FORMATS, DEFAULT_COLOR, DEFAULT_ALPHA, type ColorFormatType } from './constants';
 import type { OutputFormat } from './components/ColorFormatCard.vue';
 import {
@@ -274,10 +275,10 @@ function updateAllFormats() {
 
 // 复制文本
 async function copyText(text: string) {
-  try {
-    await navigator.clipboard.writeText(text);
+  const success = await copyToClipboard(text);
+  if (success) {
     showMessage('已复制到剪贴板');
-  } catch {
+  } else {
     showMessage('复制失败', 'error');
   }
 }

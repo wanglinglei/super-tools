@@ -80,6 +80,14 @@ const router = createRouter({
         title: '正则测试',
       },
     },
+    {
+      path: '/code/url-parser',
+      name: ROUTER_NAME.CODE_URL_PARSER,
+      component: () => import('../views/code/urlParser/index.vue'),
+      meta: {
+        title: 'URL 编解码',
+      },
+    },
   ],
 })
 

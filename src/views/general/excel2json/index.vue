@@ -259,7 +259,7 @@ import * as XLSX from 'xlsx';
 import SvgIcon from '@/components/svgIcon/SvgIcon.vue';
 import MessageToast from '@/components/Message/MessageToast.vue';
 import { useMessage } from '@/composables/useMessage';
-import { downloadFile } from '@/utils/file';
+import { downloadFile, copyToClipboard } from '@/utils';
 
 // 文件相关
 const fileInputRef = ref<HTMLInputElement | null>(null);
@@ -396,10 +396,10 @@ const copyJson = async () => {
     return;
   }
   
-  try {
-    await navigator.clipboard.writeText(jsonOutput.value);
+  const success = await copyToClipboard(jsonOutput.value);
+  if (success) {
     showMessage('已复制到剪贴板');
-  } catch {
+  } else {
     showMessage('复制失败', 'error');
   }
 };

@@ -355,7 +355,7 @@ import MessageToast from '@/components/Message/MessageToast.vue';
 import TabBar from '@/components/TabBar/TabBar.vue';
 import type { Tab } from '@/components/TabBar/TabBar.vue';
 import { useMessage } from '@/composables/useMessage';
-import { downloadFile } from '@/utils/file';
+import { downloadFile, copyToClipboard } from '@/utils';
 
 // 消息提示
 const { message, showMessage } = useMessage();
@@ -679,10 +679,10 @@ const decodeQRCode = async (imageData: string) => {
 
 // 复制文本
 const copyText = async (text: string) => {
-  try {
-    await navigator.clipboard.writeText(text);
+  const success = await copyToClipboard(text);
+  if (success) {
     showMessage('已复制到剪贴板');
-  } catch {
+  } else {
     showMessage('复制失败', 'error');
   }
 };
