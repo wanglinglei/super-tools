@@ -1,34 +1,36 @@
 <template>
-  <div class="w-full h-screen flex flex-col">
-    <!-- 顶部提示 -->
-    <div class="bg-white px-5 py-4 shadow-md z-100">
-      <div class="flex items-center justify-between">
-        <div class="flex items-center gap-3">
-          <span class="text-15px text-gray-700">
-            <span class="font-600">💡 提示：</span>
-            点击地图任意位置查询该区域的天气信息
-          </span>
-        </div>
-        <button
-          v-if="currentCity"
-          class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors text-sm"
-          @click="clearWeather"
-        >
-          清除天气
-        </button>
-      </div>
-      
-      <!-- 当前查询城市 -->
-      <div v-if="currentCity" class="mt-3 pt-3 border-t border-gray-200">
-        <span class="text-sm text-gray-600">
-          当前查询：<strong class="text-blue-600">{{ currentCity }}</strong>
-        </span>
-      </div>
-    </div>
+  <ToolLayout
+    title="天气查询"
+    icon="🌤️"
+    :content-padding="false"
+    :content-scroll="false"
+  >
+    <!-- 左侧工具栏 -->
+    <template #header-left>
+      <span class="text-sm text-gray-600">
+        💡 点击地图任意位置查询该区域的天气信息
+      </span>
+      <span v-if="currentCity" class="text-sm text-gray-600 ml-4">
+        当前查询：<strong class="text-blue-600">{{ currentCity }}</strong>
+      </span>
+    </template>
 
-    <!-- 地图容器 -->
-    <div class="flex-1 p-6">
-      <div id="weather-map-container" class="rounded-2xl w-full h-full shadow-lg"></div>
+    <!-- 右侧工具栏 -->
+    <template #header-right>
+      <ToolButton
+        v-if="currentCity"
+        icon="trash"
+        text="清除天气"
+        @click="clearWeather"
+      />
+    </template>
+
+    <!-- 主内容区 -->
+    <div class="h-full p-4">
+      <div
+        id="weather-map-container"
+        class="rounded-2xl w-full h-full shadow-lg"
+      ></div>
     </div>
 
     <!-- 天气预报面板 -->
@@ -42,7 +44,13 @@
           class="text-gray-400 hover:text-gray-600 transition-colors"
           @click="closeForecast"
         >
-          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <svg
+            class="w-5 h-5"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
             <line x1="18" y1="6" x2="6" y2="18"></line>
             <line x1="6" y1="6" x2="18" y2="18"></line>
           </svg>
@@ -59,8 +67,12 @@
             <div class="text-sm text-gray-600">{{ day.dayWeather }}</div>
           </div>
           <div class="text-right">
-            <div class="font-bold text-blue-600">{{ day.nightTemp }}~{{ day.dayTemp }}℃</div>
-            <div class="text-xs text-gray-500">{{ day.dayWindDirection }} {{ day.dayWindPower }}级</div>
+            <div class="font-bold text-blue-600">
+              {{ day.nightTemp }}~{{ day.dayTemp }}℃
+            </div>
+            <div class="text-xs text-gray-500">
+              {{ day.dayWindDirection }} {{ day.dayWindPower }}级
+            </div>
           </div>
         </div>
       </div>
@@ -72,16 +84,20 @@
       class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white px-6 py-4 rounded-lg shadow-xl z-50"
     >
       <div class="flex items-center gap-3">
-        <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-500"></div>
+        <div
+          class="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-500"
+        ></div>
         <span class="text-gray-700">正在查询天气...</span>
       </div>
     </div>
-  </div>
+  </ToolLayout>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue';
-import BaseMap from '../common/BaseMap';
+import { ref, onMounted, onUnmounted } from "vue";
+import ToolLayout from "@/layouts/ToolLayout.vue";
+import ToolButton from "@/components/ToolButton/ToolButton.vue";
+import BaseMap from "../common/BaseMap";
 
 // 地图实例
 let baseMap: BaseMap | null = null;
@@ -91,14 +107,14 @@ let infoWindow: any = null;
 
 // 状态
 const loading = ref(false);
-const currentCity = ref('');
+const currentCity = ref("");
 const forecastData = ref<any[]>([]);
 
 // 初始化地图
 const initMap = async () => {
   try {
     baseMap = new BaseMap({
-      containerId: 'weather-map-container',
+      containerId: "weather-map-container",
       baseMapConfig: {
         zoom: 12,
         center: [116.486409, 39.921489], // 默认北京
@@ -109,9 +125,9 @@ const initMap = async () => {
     AMap = baseMap.getAMap();
 
     // 监听地图点击事件
-    baseMap.on('click', handleMapClick);
+    baseMap.on("click", handleMapClick);
   } catch (error) {
-    console.error('地图加载失败:', error);
+    console.error("地图加载失败:", error);
   }
 };
 
@@ -138,22 +154,22 @@ const handleMapClick = async (e: any) => {
     // 逆地理编码获取城市信息
     const geocoder = new AMap.Geocoder();
     geocoder.getAddress([lng, lat], async (status: string, result: any) => {
-      if (status === 'complete' && result.info === 'OK') {
+      if (status === "complete" && result.info === "OK") {
         const addressComponent = result.regeocode.addressComponent;
         const city = addressComponent.city || addressComponent.province;
         const district = addressComponent.district;
-        
+
         currentCity.value = district || city;
 
         // 查询天气
         await queryWeather(district || city, [lng, lat]);
       } else {
-        console.error('逆地理编码失败');
+        console.error("逆地理编码失败");
         loading.value = false;
       }
     });
   } catch (error) {
-    console.error('查询失败:', error);
+    console.error("查询失败:", error);
     loading.value = false;
   }
 };
@@ -165,9 +181,9 @@ const queryWeather = async (city: string, position: number[]) => {
   // 查询实时天气
   weather.getLive(city, (err: any, data: any) => {
     loading.value = false;
-    
+
     if (err) {
-      console.error('天气查询失败:', err);
+      console.error("天气查询失败:", err);
       return;
     }
 
@@ -209,7 +225,7 @@ const queryWeather = async (city: string, position: number[]) => {
   // 查询天气预报
   weather.getForecast(city, (err: any, data: any) => {
     if (err) {
-      console.error('天气预报查询失败:', err);
+      console.error("天气预报查询失败:", err);
       return;
     }
 
@@ -229,7 +245,7 @@ const clearWeather = () => {
     infoWindow.close();
     infoWindow = null;
   }
-  currentCity.value = '';
+  currentCity.value = "";
   forecastData.value = [];
 };
 

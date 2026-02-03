@@ -1,19 +1,21 @@
 <template>
-  <div class="bg-white rounded-lg shadow-sm p-4 border border-gray-200">
-    <h3 class="text-sm font-bold text-gray-800 mb-3">{{ title }}</h3>
-    
+  <div class="card-p">
+    <h3 class="text-subtitle mb-3">{{ title }}</h3>
+
     <div class="space-y-3">
       <!-- 输入区 -->
       <div class="flex items-center gap-2">
-        <label class="text-sm font-medium text-gray-700 w-16">{{ format }}</label>
+        <label class="text-sm font-medium text-gray-700 w-16">{{
+          format
+        }}</label>
         <input
           :value="modelValue"
           type="text"
           :placeholder="placeholder"
-          class="flex-1 px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          class="flex-1 input-base"
           @input="handleInput"
         />
-        <div 
+        <div
           class="w-12 h-10 rounded border border-gray-300"
           :style="{ backgroundColor: previewColor }"
         ></div>
@@ -21,14 +23,16 @@
 
       <!-- 输出区 -->
       <div class="space-y-2">
-        <p class="text-xs text-gray-500 font-medium">输出:</p>
-        
+        <p class="text-hint font-medium">输出:</p>
+
         <div
           v-for="output in outputs"
           :key="output.format"
           class="flex items-center gap-2"
         >
-          <label class="text-xs font-medium text-gray-600 w-12">{{ output.format }}</label>
+          <label class="text-xs font-medium text-gray-600 w-12">{{
+            output.format
+          }}</label>
           <input
             :value="output.value"
             readonly
@@ -48,11 +52,11 @@
 </template>
 
 <script setup lang="ts">
-import SvgIcon from '@/components/svgIcon/SvgIcon.vue';
+import SvgIcon from "@/components/svgIcon/SvgIcon.vue";
 
 /**
  * 颜色格式转换卡片组件
- * 
+ *
  * @component ColorFormatCard
  */
 
@@ -60,8 +64,8 @@ import SvgIcon from '@/components/svgIcon/SvgIcon.vue';
  * 输出格式定义
  */
 export interface OutputFormat {
-  format: string;  // 格式名称（如 RGB、HSL、HSV）
-  value: string;   // 格式化后的颜色值
+  format: string; // 格式名称（如 RGB、HSL、HSV）
+  value: string; // 格式化后的颜色值
 }
 
 interface Props {
@@ -83,7 +87,7 @@ const props = defineProps<Props>();
 
 const emit = defineEmits<{
   /** 输入值改变事件 */
-  'update:modelValue': [value: string];
+  "update:modelValue": [value: string];
   /** 复制事件 */
   copy: [value: string];
 }>();
@@ -93,7 +97,7 @@ const emit = defineEmits<{
  */
 const handleInput = (event: Event) => {
   const target = event.target as HTMLInputElement;
-  emit('update:modelValue', target.value);
+  emit("update:modelValue", target.value);
 };
 </script>
 

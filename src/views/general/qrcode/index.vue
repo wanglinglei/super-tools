@@ -1,45 +1,23 @@
 <template>
-  <div class="h-screen flex flex-col bg-gray-50">
-    <!-- 顶部工具栏 -->
-    <div class="flex justify-between items-center px-6 py-2.5 bg-white border-b border-gray-200">
-      <!-- 标题 -->
-      <div class="flex items-center gap-3">
-        <span class="text-2xl">📱</span>
-        <h1 class="text-lg font-bold text-gray-800">二维码工具</h1>
-      </div>
-
-      <!-- 操作按钮组 -->
-      <div class="flex gap-2">
-        <button 
-          v-if="activeTab === 'generate'"
-          class="tool-btn" 
-          @click="generateQRCode"
-        >
-          <SvgIcon name="format" size="16px" class-name="mr-1.5" />
-          生成二维码
-        </button>
-        <button 
-          v-if="activeTab === 'generate'"
-          class="tool-btn" 
-          @click="downloadQRCode" 
-          :disabled="!qrcodeDataUrl"
-        >
-          <SvgIcon name="download" size="16px" class-name="mr-1.5" />
-          下载
-        </button>
-        <button
-          class="tool-btn-secondary"
-          title="清空所有"
-          @click="clearAll"
-        >
-          <SvgIcon name="trash" size="16px" class-name="mr-1.5" />
-          清空
-        </button>
-      </div>
-    </div>
-
-    <!-- 消息提示 -->
-    <MessageToast :visible="message.show" :text="message.text" :type="message.type" />
+  <ToolLayout title="二维码工具" icon="📱" :content-padding="false">
+    <!-- 右侧工具栏 -->
+    <template #header-right>
+      <ToolButton
+        v-if="activeTab === 'generate'"
+        type="primary"
+        icon="format"
+        text="生成二维码"
+        @click="generateQRCode"
+      />
+      <ToolButton
+        v-if="activeTab === 'generate'"
+        icon="download"
+        text="下载"
+        :disabled="!qrcodeDataUrl"
+        @click="downloadQRCode"
+      />
+      <ToolButton icon="trash" text="清空" @click="clearAll" />
+    </template>
 
     <!-- Tab 切换 -->
     <TabBar v-model="activeTab" :tabs="tabs" />
@@ -48,28 +26,31 @@
     <div class="flex-1 overflow-auto p-4">
       <div class="max-w-6xl mx-auto">
         <!-- 生成模式 -->
-        <div v-if="activeTab === 'generate'" class="grid grid-cols-1 lg:grid-cols-2 gap-3">
+        <div
+          v-if="activeTab === 'generate'"
+          class="grid grid-cols-1 lg:grid-cols-2 gap-3"
+        >
           <!-- 左侧：配置区 -->
           <div class="space-y-2.5">
             <!-- 输入内容 -->
-            <div class="bg-white rounded-lg shadow-sm p-3 border border-gray-200">
-              <h2 class="text-sm font-bold text-gray-800 mb-2">📝 输入内容</h2>
+            <div class="card p-3">
+              <h2 class="text-subtitle mb-2">📝 输入内容</h2>
               <textarea
                 v-model="inputText"
                 placeholder="请输入要生成二维码的内容（网址、文本等）"
-                class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                class="textarea-base"
                 rows="3"
                 @input="autoGenerate"
               ></textarea>
             </div>
 
             <!-- 基础配置 -->
-            <div class="bg-white rounded-lg shadow-sm p-3 border border-gray-200">
-              <h2 class="text-sm font-bold text-gray-800 mb-2">⚙️ 基础配置</h2>
+            <div class="card p-3">
+              <h2 class="text-subtitle mb-2">⚙️ 基础配置</h2>
               <div class="space-y-2.5">
                 <!-- 二维码大小 -->
                 <div>
-                  <label class="block text-xs font-medium text-gray-700 mb-1.5">
+                  <label class="text-label block mb-1.5">
                     大小: <span class="text-blue-600">{{ qrSize }}px</span>
                   </label>
                   <input
@@ -81,7 +62,9 @@
                     class="w-full"
                     @input="autoGenerate"
                   />
-                  <div class="flex justify-between text-xs text-gray-500 mt-0.5">
+                  <div
+                    class="flex justify-between text-xs text-gray-500 mt-0.5"
+                  >
                     <span>128</span>
                     <span>512</span>
                   </div>
@@ -89,10 +72,10 @@
 
                 <!-- 容错级别 -->
                 <div>
-                  <label class="block text-xs font-medium text-gray-700 mb-1.5">容错级别</label>
+                  <label class="text-label block mb-1.5">容错级别</label>
                   <select
                     v-model="errorCorrectionLevel"
-                    class="w-full px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    class="input-base py-1.5"
                     @change="autoGenerate"
                   >
                     <option value="L">低 (7%)</option>
@@ -105,12 +88,12 @@
             </div>
 
             <!-- 颜色配置 -->
-            <div class="bg-white rounded-lg shadow-sm p-3 border border-gray-200">
-              <h2 class="text-sm font-bold text-gray-800 mb-2">🎨 颜色配置</h2>
+            <div class="card p-3">
+              <h2 class="text-subtitle mb-2">🎨 颜色配置</h2>
               <div class="grid grid-cols-2 gap-2">
                 <!-- 前景色 -->
                 <div>
-                  <label class="block text-xs font-medium text-gray-700 mb-1.5">前景色</label>
+                  <label class="text-label block mb-1.5">前景色</label>
                   <div class="flex gap-1.5">
                     <input
                       v-model="foregroundColor"
@@ -129,7 +112,7 @@
 
                 <!-- 背景色 -->
                 <div>
-                  <label class="block text-xs font-medium text-gray-700 mb-1.5">背景色</label>
+                  <label class="text-label block mb-1.5">背景色</label>
                   <div class="flex gap-1.5">
                     <input
                       v-model="backgroundColor"
@@ -149,13 +132,15 @@
 
               <!-- 颜色预设 -->
               <div class="mt-2">
-                <label class="block text-xs font-medium text-gray-700 mb-1.5">快捷预设</label>
+                <label class="text-label block mb-1.5">快捷预设</label>
                 <div class="grid grid-cols-8 gap-1.5">
                   <button
                     v-for="preset in colorPresets"
                     :key="preset.name"
                     class="aspect-square rounded border-2 hover:border-blue-500 transition-colors"
-                    :style="{ background: `linear-gradient(135deg, ${preset.fg} 50%, ${preset.bg} 50%)` }"
+                    :style="{
+                      background: `linear-gradient(135deg, ${preset.fg} 50%, ${preset.bg} 50%)`,
+                    }"
                     :title="preset.name"
                     @click="applyColorPreset(preset)"
                   ></button>
@@ -164,8 +149,8 @@
             </div>
 
             <!-- 自定义图标 -->
-            <div class="bg-white rounded-lg shadow-sm p-3 border border-gray-200">
-              <h2 class="text-sm font-bold text-gray-800 mb-2">🖼️ 中心图标</h2>
+            <div class="card p-3">
+              <h2 class="text-subtitle mb-2">🖼️ 中心图标</h2>
               <div class="space-y-2">
                 <div class="flex gap-2">
                   <button
@@ -184,10 +169,19 @@
                 </div>
 
                 <!-- 图标预览 -->
-                <div v-if="centerIcon" class="flex items-center gap-2 p-2 bg-gray-50 rounded-lg">
-                  <img :src="centerIcon" class="w-10 h-10 rounded object-cover" alt="中心图标" />
+                <div
+                  v-if="centerIcon"
+                  class="flex items-center gap-2 p-2 bg-gray-50 rounded-lg"
+                >
+                  <img
+                    :src="centerIcon"
+                    class="w-10 h-10 rounded object-cover"
+                    alt="中心图标"
+                  />
                   <div class="flex-1 min-w-0">
-                    <div class="text-xs text-gray-600 mb-1">大小: {{ Math.round(iconSizeRatio * 100) }}%</div>
+                    <div class="text-xs text-gray-600 mb-1">
+                      大小: {{ Math.round(iconSizeRatio * 100) }}%
+                    </div>
                     <input
                       v-model.number="iconSizeRatio"
                       type="range"
@@ -213,17 +207,30 @@
 
           <!-- 右侧：预览区 -->
           <div>
-            <div class="bg-white rounded-lg shadow-sm p-3 border border-gray-200">
-              <h2 class="text-sm font-bold text-gray-800 mb-2">👁️ 二维码预览</h2>
-              
+            <div class="card p-3">
+              <h2 class="text-subtitle mb-2">👁️ 二维码预览</h2>
+
               <!-- 二维码显示区 -->
-              <div class="flex items-center justify-center bg-gray-50 rounded-lg p-4" style="min-height: 360px;">
+              <div
+                class="flex items-center justify-center bg-gray-50 rounded-lg p-4"
+                style="min-height: 360px"
+              >
                 <div v-if="qrcodeDataUrl" class="relative">
-                  <img :src="qrcodeDataUrl" alt="二维码" class="rounded-lg shadow-md" />
-                  <div v-if="centerIcon" class="absolute inset-0 flex items-center justify-center">
+                  <img
+                    :src="qrcodeDataUrl"
+                    alt="二维码"
+                    class="rounded-lg shadow-md"
+                  />
+                  <div
+                    v-if="centerIcon"
+                    class="absolute inset-0 flex items-center justify-center"
+                  >
                     <img
                       :src="centerIcon"
-                      :style="{ width: iconDisplaySize + 'px', height: iconDisplaySize + 'px' }"
+                      :style="{
+                        width: iconDisplaySize + 'px',
+                        height: iconDisplaySize + 'px',
+                      }"
                       class="rounded bg-white p-1"
                       alt="中心图标"
                     />
@@ -261,12 +268,20 @@
               <span class="text-2xl mr-2">🔍</span>
               二维码解码
             </h2>
-            
+
             <!-- 上传区域 -->
-            <div v-if="!decodeImageUrl" class="text-center py-16 border-2 border-dashed border-gray-300 rounded-lg hover:border-blue-400 transition-colors cursor-pointer" @click="selectDecodeImage">
+            <div
+              v-if="!decodeImageUrl"
+              class="text-center py-16 border-2 border-dashed border-gray-300 rounded-lg hover:border-blue-400 transition-colors cursor-pointer"
+              @click="selectDecodeImage"
+            >
               <div class="text-6xl mb-4">📷</div>
-              <div class="text-base text-gray-600 mb-2 font-medium">点击上传二维码图片</div>
-              <div class="text-sm text-gray-400">支持 JPG、PNG、GIF、WebP 等格式</div>
+              <div class="text-base text-gray-600 mb-2 font-medium">
+                点击上传二维码图片
+              </div>
+              <div class="text-sm text-gray-400">
+                支持 JPG、PNG、GIF、WebP 等格式
+              </div>
             </div>
 
             <!-- 图片预览和解码结果 -->
@@ -274,33 +289,53 @@
               <!-- 图片预览 -->
               <div class="text-center">
                 <div class="inline-block relative">
-                  <img :src="decodeImageUrl" alt="待解码图片" class="max-h-64 rounded-lg shadow-md" />
+                  <img
+                    :src="decodeImageUrl"
+                    alt="待解码图片"
+                    class="max-h-64 rounded-lg shadow-md"
+                  />
                 </div>
               </div>
 
               <!-- 解码结果 -->
               <div v-if="decoding" class="text-center py-8">
-                <div class="inline-block animate-spin rounded-full h-12 w-12 border-4 border-blue-500 border-t-transparent mb-3"></div>
-                <div class="text-base text-gray-600 font-medium">正在解码...</div>
+                <div
+                  class="inline-block animate-spin rounded-full h-12 w-12 border-4 border-blue-500 border-t-transparent mb-3"
+                ></div>
+                <div class="text-base text-gray-600 font-medium">
+                  正在解码...
+                </div>
               </div>
 
-              <div v-else-if="decodeResult" class="bg-green-50 rounded-lg p-5 border border-green-200">
+              <div
+                v-else-if="decodeResult"
+                class="bg-green-50 rounded-lg p-5 border border-green-200"
+              >
                 <div class="flex items-start gap-3">
                   <div class="flex-shrink-0 text-2xl">✓</div>
                   <div class="flex-1 min-w-0">
-                    <div class="text-sm text-green-600 mb-2 font-bold">解码成功</div>
-                    <div class="text-base text-gray-800 break-all bg-white rounded p-3 border border-green-200">
+                    <div class="text-sm text-green-600 mb-2 font-bold">
+                      解码成功
+                    </div>
+                    <div
+                      class="text-base text-gray-800 break-all bg-white rounded p-3 border border-green-200"
+                    >
                       {{ decodeResult }}
                     </div>
                   </div>
                 </div>
               </div>
 
-              <div v-else-if="decodeError" class="bg-red-50 rounded-lg p-5 border border-red-200">
+              <div
+                v-else-if="decodeError"
+                class="bg-red-50 rounded-lg p-5 border border-red-200"
+              >
                 <div class="flex items-start gap-3">
                   <div class="flex-shrink-0 text-2xl">✗</div>
                   <div class="flex-1">
-                    <div class="text-sm text-red-600 mb-2 font-bold">解码失败</div>
+                    <div class="text-sm text-red-600 mb-2 font-bold">
+                      解码失败
+                    </div>
                     <div class="text-sm text-gray-700">{{ decodeError }}</div>
                   </div>
                 </div>
@@ -313,7 +348,6 @@
                   class="px-4 py-2.5 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors font-medium"
                   @click="copyText(decodeResult)"
                 >
-                  <SvgIcon name="copy" size="16px" class-name="mr-1.5 inline-block" />
                   复制结果
                 </button>
                 <button
@@ -343,80 +377,83 @@
         </div>
       </div>
     </div>
-  </div>
+  </ToolLayout>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue';
-import QRCode from 'qrcode';
-import jsQR from 'jsqr';
-import SvgIcon from '@/components/svgIcon/SvgIcon.vue';
-import MessageToast from '@/components/Message/MessageToast.vue';
-import TabBar from '@/components/TabBar/TabBar.vue';
-import type { Tab } from '@/components/TabBar/TabBar.vue';
-import { useMessage } from '@/composables/useMessage';
-import { downloadFile, copyToClipboard } from '@/utils';
+import { ref, computed, onMounted, inject } from "vue";
+import QRCode from "qrcode";
+import jsQR from "jsqr";
+import ToolLayout from "@/layouts/ToolLayout.vue";
+import ToolButton from "@/components/ToolButton/ToolButton.vue";
+import TabBar from "@/components/TabBar/TabBar.vue";
+import type { Tab } from "@/components/TabBar/TabBar.vue";
+import { downloadFile, copyToClipboard } from "@/utils";
+import type { MessageType } from "@/composables/useMessage";
 
-// 消息提示
-const { message, showMessage } = useMessage();
+// 从布局组件注入 showMessage
+const showMessage =
+  inject<(text: string, type?: MessageType) => void>("showMessage")!;
 
 // Tab 配置
 const tabs: Tab[] = [
-  { label: '生成二维码', value: 'generate', icon: '📱' },
-  { label: '解码二维码', value: 'decode', icon: '🔍' },
+  { label: "生成二维码", value: "generate", icon: "📱" },
+  { label: "解码二维码", value: "decode", icon: "🔍" },
 ];
 
 // Tab 状态
-const activeTab = ref<'generate' | 'decode'>('generate');
+const activeTab = ref<"generate" | "decode">("generate");
 
 // 输入内容
-const inputText = ref('https://example.com');
+const inputText = ref("https://example.com");
 
 // 二维码配置
 const qrSize = ref(300);
-const errorCorrectionLevel = ref<'L' | 'M' | 'Q' | 'H'>('M');
-const foregroundColor = ref('#000000');
-const backgroundColor = ref('#ffffff');
+const errorCorrectionLevel = ref<"L" | "M" | "Q" | "H">("M");
+const foregroundColor = ref("#000000");
+const backgroundColor = ref("#ffffff");
 
 // 中心图标
-const centerIcon = ref('');
+const centerIcon = ref("");
 const iconSizeRatio = ref(0.2);
 const iconInputRef = ref<HTMLInputElement | null>(null);
 
 // 二维码数据
-const qrcodeDataUrl = ref('');
+const qrcodeDataUrl = ref("");
 
 // 解码相关
 const decodeInputRef = ref<HTMLInputElement | null>(null);
-const decodeImageUrl = ref('');
+const decodeImageUrl = ref("");
 const decoding = ref(false);
-const decodeResult = ref('');
-const decodeError = ref('');
+const decodeResult = ref("");
+const decodeError = ref("");
 
 // 计算图标显示大小
-const iconDisplaySize = computed(() => Math.round(qrSize.value * iconSizeRatio.value));
+const iconDisplaySize = computed(() =>
+  Math.round(qrSize.value * iconSizeRatio.value)
+);
 
 // 颜色预设
 const colorPresets = [
-  { name: '经典黑白', fg: '#000000', bg: '#ffffff' },
-  { name: '蓝色', fg: '#1e40af', bg: '#eff6ff' },
-  { name: '绿色', fg: '#15803d', bg: '#f0fdf4' },
-  { name: '紫色', fg: '#7c3aed', bg: '#faf5ff' },
-  { name: '红色', fg: '#dc2626', bg: '#fef2f2' },
-  { name: '橙色', fg: '#ea580c', bg: '#fff7ed' },
-  { name: '粉色', fg: '#db2777', bg: '#fdf2f8' },
-  { name: '深色模式', fg: '#ffffff', bg: '#1f2937' },
+  { name: "经典黑白", fg: "#000000", bg: "#ffffff" },
+  { name: "蓝色", fg: "#1e40af", bg: "#eff6ff" },
+  { name: "绿色", fg: "#15803d", bg: "#f0fdf4" },
+  { name: "紫色", fg: "#7c3aed", bg: "#faf5ff" },
+  { name: "红色", fg: "#dc2626", bg: "#fef2f2" },
+  { name: "橙色", fg: "#ea580c", bg: "#fff7ed" },
+  { name: "粉色", fg: "#db2777", bg: "#fdf2f8" },
+  { name: "深色模式", fg: "#ffffff", bg: "#1f2937" },
 ];
 
 // 生成二维码
 const generateQRCode = async () => {
   if (!inputText.value.trim()) {
-    showMessage('请输入要生成二维码的内容', 'error');
+    showMessage("请输入要生成二维码的内容", "error");
     return;
   }
 
   try {
-    const canvas = document.createElement('canvas');
+    const canvas = document.createElement("canvas");
     await QRCode.toCanvas(canvas, inputText.value, {
       width: qrSize.value,
       margin: 2,
@@ -429,22 +466,22 @@ const generateQRCode = async () => {
 
     // 如果有中心图标，在 canvas 上绘制
     if (centerIcon.value) {
-      const ctx = canvas.getContext('2d');
+      const ctx = canvas.getContext("2d");
       if (ctx) {
         const img = new Image();
-        img.crossOrigin = 'anonymous';
+        img.crossOrigin = "anonymous";
         img.src = centerIcon.value;
-        
+
         await new Promise((resolve, reject) => {
           img.onload = () => {
             const iconSize = iconDisplaySize.value;
             const x = (canvas.width - iconSize) / 2;
             const y = (canvas.height - iconSize) / 2;
-            
+
             // 绘制白色背景
-            ctx.fillStyle = '#ffffff';
+            ctx.fillStyle = "#ffffff";
             ctx.fillRect(x - 4, y - 4, iconSize + 8, iconSize + 8);
-            
+
             // 绘制图标
             ctx.drawImage(img, x, y, iconSize, iconSize);
             resolve(true);
@@ -454,11 +491,11 @@ const generateQRCode = async () => {
       }
     }
 
-    qrcodeDataUrl.value = canvas.toDataURL('image/png');
-    showMessage('二维码生成成功');
+    qrcodeDataUrl.value = canvas.toDataURL("image/png");
+    showMessage("二维码生成成功");
   } catch (error) {
-    console.error('生成二维码失败:', error);
-    showMessage('生成二维码失败', 'error');
+    console.error("生成二维码失败:", error);
+    showMessage("生成二维码失败", "error");
   }
 };
 
@@ -478,44 +515,41 @@ const autoGenerate = () => {
 // 下载二维码
 const downloadQRCode = () => {
   if (!qrcodeDataUrl.value) {
-    showMessage('请先生成二维码', 'error');
+    showMessage("请先生成二维码", "error");
     return;
   }
 
   try {
-    // 使用统一的 downloadFile 方法，自动识别 Data URL 类型
     downloadFile(qrcodeDataUrl.value, {
-      filename: 'qrcode.png',
-      addTimestamp: true
+      filename: "qrcode.png",
+      addTimestamp: true,
     });
-    showMessage('下载成功');
+    showMessage("下载成功");
   } catch (error) {
-    showMessage((error as Error).message, 'error');
+    showMessage((error as Error).message, "error");
   }
 };
 
 // 复制二维码图片
 const copyQRCodeImage = async () => {
   if (!qrcodeDataUrl.value) {
-    showMessage('请先生成二维码', 'error');
+    showMessage("请先生成二维码", "error");
     return;
   }
 
   try {
     const response = await fetch(qrcodeDataUrl.value);
     const blob = await response.blob();
-    await navigator.clipboard.write([
-      new ClipboardItem({ 'image/png': blob }),
-    ]);
-    showMessage('已复制到剪贴板');
+    await navigator.clipboard.write([new ClipboardItem({ "image/png": blob })]);
+    showMessage("已复制到剪贴板");
   } catch (error) {
-    console.error('复制失败:', error);
-    showMessage('复制失败，请使用下载功能', 'error');
+    console.error("复制失败:", error);
+    showMessage("复制失败，请使用下载功能", "error");
   }
 };
 
 // 应用颜色预设
-const applyColorPreset = (preset: any) => {
+const applyColorPreset = (preset: { name: string; fg: string; bg: string }) => {
   foregroundColor.value = preset.fg;
   backgroundColor.value = preset.bg;
   autoGenerate();
@@ -533,42 +567,39 @@ const handleIconUpload = (event: Event) => {
   const file = target.files?.[0];
   if (!file) return;
 
-  // 验证文件类型
-  if (!file.type.startsWith('image/')) {
-    showMessage('请选择图片文件', 'error');
+  if (!file.type.startsWith("image/")) {
+    showMessage("请选择图片文件", "error");
     return;
   }
 
-  // 读取图片
   const reader = new FileReader();
   reader.onload = (e) => {
     centerIcon.value = e.target?.result as string;
     autoGenerate();
-    showMessage('图标已添加');
+    showMessage("图标已添加");
   };
   reader.readAsDataURL(file);
 };
 
 // 移除中心图标
 const removeCenterIcon = () => {
-  centerIcon.value = '';
+  centerIcon.value = "";
   autoGenerate();
-  showMessage('图标已移除');
+  showMessage("图标已移除");
 };
 
 // 清空所有
 const clearAll = () => {
-  inputText.value = '';
-  qrcodeDataUrl.value = '';
-  centerIcon.value = '';
+  inputText.value = "";
+  qrcodeDataUrl.value = "";
+  centerIcon.value = "";
   qrSize.value = 300;
-  errorCorrectionLevel.value = 'M';
-  foregroundColor.value = '#000000';
-  backgroundColor.value = '#ffffff';
+  errorCorrectionLevel.value = "M";
+  foregroundColor.value = "#000000";
+  backgroundColor.value = "#ffffff";
   iconSizeRatio.value = 0.2;
-  // 同时清空解码相关
   clearDecode();
-  showMessage('已清空所有内容');
+  showMessage("已清空所有内容");
 };
 
 // 选择要解码的图片
@@ -582,81 +613,69 @@ const handleDecodeImage = async (event: Event) => {
   const file = target.files?.[0];
   if (!file) return;
 
-  // 验证文件类型
-  if (!file.type.startsWith('image/')) {
-    showMessage('请选择图片文件', 'error');
+  if (!file.type.startsWith("image/")) {
+    showMessage("请选择图片文件", "error");
     return;
   }
 
   try {
     decoding.value = true;
-    decodeResult.value = '';
-    decodeError.value = '';
+    decodeResult.value = "";
+    decodeError.value = "";
 
-    // 读取图片
     const reader = new FileReader();
     reader.onload = async (e) => {
       const imageData = e.target?.result as string;
       decodeImageUrl.value = imageData;
-
-      // 解码二维码
       await decodeQRCode(imageData);
     };
     reader.readAsDataURL(file);
 
-    // 清空 input
     if (target) {
-      target.value = '';
+      target.value = "";
     }
   } catch (error) {
-    console.error('处理图片失败:', error);
+    console.error("处理图片失败:", error);
     decoding.value = false;
-    decodeError.value = '图片处理失败';
-    showMessage('图片处理失败', 'error');
+    decodeError.value = "图片处理失败";
+    showMessage("图片处理失败", "error");
   }
 };
 
 // 解码二维码
 const decodeQRCode = async (imageData: string) => {
   try {
-    // 创建图片元素
     const img = new Image();
     img.src = imageData;
 
     await new Promise((resolve, reject) => {
       img.onload = () => {
         try {
-          // 创建 canvas
-          const canvas = document.createElement('canvas');
-          const ctx = canvas.getContext('2d');
+          const canvas = document.createElement("canvas");
+          const ctx = canvas.getContext("2d");
           if (!ctx) {
-            reject(new Error('无法创建 canvas context'));
+            reject(new Error("无法创建 canvas context"));
             return;
           }
 
-          // 设置 canvas 尺寸
           canvas.width = img.width;
           canvas.height = img.height;
-
-          // 绘制图片
           ctx.drawImage(img, 0, 0);
 
-          // 获取图片数据
-          const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-
-          // 使用 jsQR 解码
-          const code = jsQR(imageData.data, imageData.width, imageData.height, {
-            inversionAttempts: 'dontInvert',
+          const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+          const code = jsQR(imgData.data, imgData.width, imgData.height, {
+            inversionAttempts: "dontInvert",
           });
 
           decoding.value = false;
 
           if (code) {
             decodeResult.value = code.data;
-            showMessage('解码成功');
+            showMessage("解码成功");
           } else {
-            decodeError.value = '未识别到二维码，请确保图片清晰且包含完整二维码';
-            showMessage('未识别到二维码', 'error');
+            decodeError.value =
+              "未识别到二维码，请确保图片清晰且包含完整二维码";
+            showMessage("未识别到二维码", "error");
           }
 
           resolve(true);
@@ -666,14 +685,14 @@ const decodeQRCode = async (imageData: string) => {
       };
 
       img.onerror = () => {
-        reject(new Error('图片加载失败'));
+        reject(new Error("图片加载失败"));
       };
     });
   } catch (error) {
-    console.error('解码失败:', error);
+    console.error("解码失败:", error);
     decoding.value = false;
-    decodeError.value = '解码失败，请重试';
-    showMessage('解码失败', 'error');
+    decodeError.value = "解码失败，请重试";
+    showMessage("解码失败", "error");
   }
 };
 
@@ -681,22 +700,21 @@ const decodeQRCode = async (imageData: string) => {
 const copyText = async (text: string) => {
   const success = await copyToClipboard(text);
   if (success) {
-    showMessage('已复制到剪贴板');
+    showMessage("已复制到剪贴板");
   } else {
-    showMessage('复制失败', 'error');
+    showMessage("复制失败", "error");
   }
 };
 
 // 清空解码
 const clearDecode = () => {
-  decodeImageUrl.value = '';
-  decodeResult.value = '';
-  decodeError.value = '';
+  decodeImageUrl.value = "";
+  decodeResult.value = "";
+  decodeError.value = "";
   decoding.value = false;
 };
 
 onMounted(() => {
-  // 初始生成二维码
   if (inputText.value) {
     generateQRCode();
   }
@@ -704,22 +722,6 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.tool-btn {
-  @apply flex items-center px-3 py-1.5 bg-blue-500 text-white rounded-md text-sm font-medium;
-  @apply hover:bg-blue-600 transition-all cursor-pointer shadow-sm;
-  @apply active:bg-blue-700;
-}
-
-.tool-btn:disabled {
-  @apply opacity-50 cursor-not-allowed hover:bg-blue-500;
-}
-
-.tool-btn-secondary {
-  @apply flex items-center px-3 py-1.5 bg-white border border-gray-300 rounded-md text-sm text-gray-700 font-medium;
-  @apply hover:bg-gray-50 hover:border-gray-400 transition-all cursor-pointer;
-  @apply active:bg-gray-100;
-}
-
 /* 自定义滑块样式 */
 input[type="range"] {
   @apply h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer;

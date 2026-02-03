@@ -1,170 +1,154 @@
 <template>
-  <div class="h-screen flex flex-col bg-gray-50">
-    <!-- 顶部工具栏 -->
-    <div class="flex justify-between items-center px-4 py-3 bg-white border-b border-gray-200 shadow-sm">
-      <!-- 左侧按钮组 -->
-      <div class="flex gap-2 items-center">
-        <!-- 格式快捷按钮 -->
-        <div class="flex gap-1 items-center px-2 py-1 bg-gray-50 rounded-md border border-gray-200">
-          <button
-            class="format-icon-btn"
-            title="加粗 (Ctrl+B)"
-            @click="applyFormat('bold')"
-          >
-            <FormatSvg name="bold" />
-          </button>
-          <button
-            class="format-icon-btn"
-            title="斜体 (Ctrl+I)"
-            @click="applyFormat('italic')"
-          >
-            <FormatSvg name="italic" />
-          </button>
-          <button
-            class="format-icon-btn"
-            title="标题"
-            @click="applyFormat('heading')"
-          >
-            <FormatSvg name="heading" />
-          </button>
-          <div class="w-px h-4 bg-gray-300 mx-1"></div>
-          <button
-            class="format-icon-btn"
-            title="引用"
-            @click="applyFormat('quote')"
-          >
-            <FormatSvg name="quote" />
-          </button>
-          <button
-            class="format-icon-btn"
-            title="代码"
-            @click="applyFormat('code')"
-          >
-            <FormatSvg name="code" />
-          </button>
-          <div class="w-px h-4 bg-gray-300 mx-1"></div>
-          <button
-            class="format-icon-btn"
-            title="无序列表"
-            @click="applyFormat('list')"
-          >
-            <FormatSvg name="list" />
-          </button>
-          <button
-            class="format-icon-btn"
-            title="有序列表"
-            @click="applyFormat('orderedList')"
-          >
-            <FormatSvg name="orderedList" />
-          </button>
-          <div class="w-px h-4 bg-gray-300 mx-1"></div>
-          <button
-            class="format-icon-btn"
-            title="链接"
-            @click="applyFormat('link')"
-          >
-            <FormatSvg name="link" />
-          </button>
-          <button
-            class="format-icon-btn"
-            title="图片"
-            @click="applyFormat('image')"
-          >
-            <FormatSvg name="image" />
-          </button>
-          <button
-            class="format-icon-btn"
-            title="表格"
-            @click="applyFormat('table')"
-          >
-            <FormatSvg name="table" />
-          </button>
-        </div>
-
-        <div class="w-px h-6 bg-gray-300"></div>
-
+  <ToolLayout
+    title="Markdown 编辑器"
+    icon="M↓"
+    :content-padding="false"
+    :content-scroll="false"
+  >
+    <!-- 左侧工具栏 -->
+    <template #header-left>
+      <!-- 格式快捷按钮 -->
+      <div
+        class="flex gap-1 items-center px-2 py-1 bg-gray-50 rounded-md border border-gray-200"
+      >
         <button
-          class="tool-btn"
-          @click="formatMarkdown"
+          class="format-icon-btn"
+          title="加粗 (Ctrl+B)"
+          @click="applyFormat('bold')"
         >
-          <SvgIcon name="format" size="16px" class-name="mr-1.5" />
-          格式化
+          <FormatSvg name="bold" />
         </button>
         <button
-          class="tool-btn"
-          :class="{ 'active': showMode === 'split' }"
-          @click="toggleMode('split')"
+          class="format-icon-btn"
+          title="斜体 (Ctrl+I)"
+          @click="applyFormat('italic')"
         >
-          <SvgIcon name="split" size="16px" class-name="mr-1.5" />
-          分屏
+          <FormatSvg name="italic" />
         </button>
         <button
-          class="tool-btn"
-          :class="{ 'active': showMode === 'preview' }"
-          @click="toggleMode('preview')"
+          class="format-icon-btn"
+          title="标题"
+          @click="applyFormat('heading')"
         >
-          <SvgIcon name="eye" size="16px" class-name="mr-1.5" />
-          预览
+          <FormatSvg name="heading" />
+        </button>
+        <div class="w-px h-4 bg-gray-300 mx-1"></div>
+        <button
+          class="format-icon-btn"
+          title="引用"
+          @click="applyFormat('quote')"
+        >
+          <FormatSvg name="quote" />
+        </button>
+        <button
+          class="format-icon-btn"
+          title="代码"
+          @click="applyFormat('code')"
+        >
+          <FormatSvg name="code" />
+        </button>
+        <div class="w-px h-4 bg-gray-300 mx-1"></div>
+        <button
+          class="format-icon-btn"
+          title="无序列表"
+          @click="applyFormat('list')"
+        >
+          <FormatSvg name="list" />
+        </button>
+        <button
+          class="format-icon-btn"
+          title="有序列表"
+          @click="applyFormat('orderedList')"
+        >
+          <FormatSvg name="orderedList" />
+        </button>
+        <div class="w-px h-4 bg-gray-300 mx-1"></div>
+        <button
+          class="format-icon-btn"
+          title="链接"
+          @click="applyFormat('link')"
+        >
+          <FormatSvg name="link" />
+        </button>
+        <button
+          class="format-icon-btn"
+          title="图片"
+          @click="applyFormat('image')"
+        >
+          <FormatSvg name="image" />
+        </button>
+        <button
+          class="format-icon-btn"
+          title="表格"
+          @click="applyFormat('table')"
+        >
+          <FormatSvg name="table" />
         </button>
       </div>
 
-      <!-- 右侧按钮组 -->
-      <div class="flex gap-2">
-        <button
-          class="tool-btn-icon"
-          title="上传 Markdown 文件"
-          @click="uploadFile"
-        >
-          <SvgIcon name="upload" size="20px" />
-        </button>
-        <button
-          class="tool-btn-icon"
-          title="保存 Markdown 文件"
-          @click="saveFile"
-        >
-          <SvgIcon name="download" size="20px" />
-        </button>
-        <button
-          class="tool-btn-icon"
-          title="复制内容"
-          @click="copyContent"
-        >
-          <SvgIcon name="copy" size="20px" />
-        </button>
-        <button
-          class="tool-btn-icon"
-          title="清空内容"
-          @click="clearContent"
-        >
-          <SvgIcon name="trash" size="20px" />
-        </button>
-      </div>
-    </div>
+      <div class="w-px h-6 bg-gray-300"></div>
 
-    <!-- 消息提示 -->
-    <MessageToast :visible="message.show" :text="message.text" :type="message.type" />
+      <ToolButton icon="format" text="格式化" @click="formatMarkdown" />
+      <ToolButton
+        icon="split"
+        text="分屏"
+        :class="{ active: showMode === 'split' }"
+        @click="toggleMode('split')"
+      />
+      <ToolButton
+        icon="eye"
+        text="预览"
+        :class="{ active: showMode === 'preview' }"
+        @click="toggleMode('preview')"
+      />
+    </template>
+
+    <!-- 右侧工具栏 -->
+    <template #header-right>
+      <ToolButton
+        type="icon"
+        icon="upload"
+        title="上传 Markdown 文件"
+        @click="uploadFile"
+      />
+      <ToolButton
+        type="icon"
+        icon="download"
+        title="保存 Markdown 文件"
+        @click="saveFile"
+      />
+      <ToolButton
+        type="icon"
+        icon="copy"
+        title="复制内容"
+        @click="copyContent"
+      />
+      <ToolButton
+        type="icon"
+        icon="trash"
+        title="清空内容"
+        @click="clearContent"
+      />
+    </template>
 
     <!-- 编辑器和预览区域 -->
-    <div class="flex-1 overflow-hidden flex">
+    <div class="flex-1 overflow-hidden flex h-full">
       <!-- 编辑器区域 -->
-      <div 
+      <div
         v-show="showMode === 'edit' || showMode === 'split'"
         :class="showMode === 'split' ? 'w-1/2' : 'w-full'"
-        class="border-r border-gray-200"
+        class="border-r border-gray-200 h-full"
       >
         <div ref="editorRef" class="w-full h-full"></div>
       </div>
 
       <!-- 预览区域 -->
-      <div 
+      <div
         v-show="showMode === 'preview' || showMode === 'split'"
         :class="showMode === 'split' ? 'w-1/2' : 'w-full'"
-        class="overflow-auto bg-white"
+        class="overflow-auto bg-white h-full"
       >
-        <div 
-          class="markdown-preview p-6"
-          v-html="renderedHtml"
-        ></div>
+        <div class="markdown-preview p-6" v-html="renderedHtml"></div>
       </div>
     </div>
 
@@ -176,21 +160,21 @@
       class="hidden"
       @change="handleFileUpload"
     />
-  </div>
+  </ToolLayout>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, computed } from 'vue';
-import * as ace from 'ace-builds';
-import 'ace-builds/src-noconflict/mode-markdown';
-import 'ace-builds/src-noconflict/theme-github';
-import 'ace-builds/src-noconflict/ext-language_tools';
-import { marked } from 'marked';
-import SvgIcon from '@/components/svgIcon/SvgIcon.vue';
-import FormatSvg from './components/formatSvg.vue';
-import MessageToast from '@/components/Message/MessageToast.vue';
-import { useMessage } from '@/composables/useMessage';
-import { downloadFile, copyToClipboard } from '@/utils';
+import { ref, onMounted, onUnmounted, computed, inject } from "vue";
+import * as ace from "ace-builds";
+import "ace-builds/src-noconflict/mode-markdown";
+import "ace-builds/src-noconflict/theme-github";
+import "ace-builds/src-noconflict/ext-language_tools";
+import { marked } from "marked";
+import ToolLayout from "@/layouts/ToolLayout.vue";
+import ToolButton from "@/components/ToolButton/ToolButton.vue";
+import FormatSvg from "./components/formatSvg.vue";
+import { downloadFile, copyToClipboard } from "@/utils";
+import type { MessageType } from "@/composables/useMessage";
 
 // 编辑器引用
 const editorRef = ref<HTMLElement | null>(null);
@@ -198,13 +182,14 @@ const fileInputRef = ref<HTMLInputElement | null>(null);
 let editor: ace.Ace.Editor | null = null;
 
 // 显示模式：edit（仅编辑）、preview（仅预览）、split（分屏）
-const showMode = ref<'edit' | 'preview' | 'split'>('edit');
+const showMode = ref<"edit" | "preview" | "split">("edit");
 
 // Markdown 内容
-const markdownContent = ref('');
+const markdownContent = ref("");
 
-// 消息提示
-const { message, showMessage } = useMessage();
+// 从布局组件注入 showMessage
+const showMessage =
+  inject<(text: string, type?: MessageType) => void>("showMessage")!;
 
 // 配置 marked
 marked.setOptions({
@@ -217,7 +202,9 @@ const renderedHtml = computed(() => {
   try {
     return marked(markdownContent.value) as string;
   } catch (e) {
-    return `<p class="text-red-500">Markdown 解析错误: ${(e as Error).message}</p>`;
+    return `<p class="text-red-500">Markdown 解析错误: ${
+      (e as Error).message
+    }</p>`;
   }
 });
 
@@ -226,8 +213,8 @@ const initEditor = () => {
   if (!editorRef.value) return;
 
   editor = ace.edit(editorRef.value, {
-    mode: 'ace/mode/markdown',
-    theme: 'ace/theme/github',
+    mode: "ace/mode/markdown",
+    theme: "ace/theme/github",
     fontSize: 14,
     tabSize: 2,
     useSoftTabs: true,
@@ -283,8 +270,8 @@ function hello() {
 
   // 监听内容变化
   if (editor) {
-    editor.on('change', () => {
-      markdownContent.value = editor?.getValue() || '';
+    editor.on("change", () => {
+      markdownContent.value = editor?.getValue() || "";
     });
   }
 };
@@ -296,81 +283,81 @@ const applyFormat = (format: string) => {
   const selection = editor.getSelectedText();
   const range = editor.getSelectionRange();
 
-  let replacement = '';
+  let replacement = "";
   let cursorOffset = 0;
 
   switch (format) {
-    case 'bold':
+    case "bold":
       if (selection) {
         replacement = `**${selection}**`;
         cursorOffset = 2;
       } else {
-        replacement = '****';
+        replacement = "****";
         cursorOffset = 2;
       }
       break;
 
-    case 'italic':
+    case "italic":
       if (selection) {
         replacement = `*${selection}*`;
         cursorOffset = 1;
       } else {
-        replacement = '**';
+        replacement = "**";
         cursorOffset = 1;
       }
       break;
 
-    case 'heading':
+    case "heading":
       if (selection) {
         replacement = `## ${selection}`;
         cursorOffset = 3;
       } else {
-        replacement = '## ';
+        replacement = "## ";
         cursorOffset = 3;
       }
       break;
 
-    case 'quote':
+    case "quote":
       if (selection) {
         replacement = `> ${selection}`;
         cursorOffset = 2;
       } else {
-        replacement = '> ';
+        replacement = "> ";
         cursorOffset = 2;
       }
       break;
 
-    case 'code':
+    case "code":
       if (selection) {
         replacement = `\`${selection}\``;
         cursorOffset = 1;
       } else {
-        replacement = '``';
+        replacement = "``";
         cursorOffset = 1;
       }
       break;
 
-    case 'list':
+    case "list":
       if (selection) {
         replacement = `- ${selection}`;
         cursorOffset = 2;
       } else {
-        replacement = '- ';
+        replacement = "- ";
         cursorOffset = 2;
       }
       break;
 
-    case 'orderedList':
+    case "orderedList":
       if (selection) {
         replacement = `1. ${selection}`;
         cursorOffset = 3;
       } else {
-        replacement = '1. ';
+        replacement = "1. ";
         cursorOffset = 3;
       }
       break;
 
-    case 'link':
+    case "link":
       if (selection) {
         replacement = `[${selection}](url)`;
         // 光标移动到 url 位置
@@ -386,12 +373,12 @@ const applyFormat = (format: string) => {
         editor.focus();
         return;
       } else {
-        replacement = '[](url)';
+        replacement = "[](url)";
         cursorOffset = 1;
       }
       break;
 
-    case 'image':
+    case "image":
       if (selection) {
         replacement = `![${selection}](url)`;
         // 光标移动到 url 位置
@@ -407,12 +394,12 @@ const applyFormat = (format: string) => {
         editor.focus();
         return;
       } else {
-        replacement = '![](url)';
+        replacement = "![](url)";
         cursorOffset = 2;
       }
       break;
 
-    case 'table':
+    case "table":
       replacement = `| 列1 | 列2 | 列3 |
 |-----|-----|-----|
 | 内容 | 内容 | 内容 |
@@ -443,10 +430,10 @@ const applyFormat = (format: string) => {
 };
 
 // 切换显示模式
-const toggleMode = (mode: 'edit' | 'preview' | 'split') => {
+const toggleMode = (mode: "edit" | "preview" | "split") => {
   // 如果点击的是当前已激活的模式，则切换回编辑模式
   if (showMode.value === mode) {
-    showMode.value = 'edit';
+    showMode.value = "edit";
   } else {
     showMode.value = mode;
   }
@@ -458,28 +445,28 @@ const formatMarkdown = () => {
 
   const content = editor.getValue();
   if (!content.trim()) {
-    showMessage('内容为空', 'error');
+    showMessage("内容为空", "error");
     return;
   }
 
   // 简单的格式化：移除多余空行，保持最多一个空行
   const formatted = content
-    .split('\n')
+    .split("\n")
     .reduce((acc: string[], line: string, index: number, arr: string[]) => {
       // 如果当前行不为空，或者前一行不为空，则保留
       if (line.trim() || (index > 0 && arr[index - 1]?.trim())) {
         acc.push(line);
-      } else if (index === 0 || acc[acc.length - 1] !== '') {
+      } else if (index === 0 || acc[acc.length - 1] !== "") {
         // 保留第一个空行
-        acc.push('');
+        acc.push("");
       }
       return acc;
     }, [])
-    .join('\n')
+    .join("\n")
     .trim();
 
   editor.setValue(formatted, -1);
-  showMessage('格式化成功', 'success');
+  showMessage("格式化成功", "success");
 };
 
 // 上传文件
@@ -500,16 +487,16 @@ const handleFileUpload = (event: Event) => {
     if (editor) {
       editor.setValue(content, -1);
       markdownContent.value = content;
-      showMessage('文件上传成功', 'success');
+      showMessage("文件上传成功", "success");
     }
   };
   reader.onerror = () => {
-    showMessage('文件读取失败', 'error');
+    showMessage("文件读取失败", "error");
   };
   reader.readAsText(file);
 
   // 重置 input 以便可以再次选择同一文件
-  target.value = '';
+  target.value = "";
 };
 
 // 保存文件
@@ -518,19 +505,19 @@ const saveFile = () => {
 
   const content = editor.getValue();
   if (!content.trim()) {
-    showMessage('内容为空，无法保存', 'error');
+    showMessage("内容为空，无法保存", "error");
     return;
   }
 
   try {
     // 使用统一的 downloadFile 方法，自动识别文本类型
     downloadFile(content, {
-      filename: 'document.md',
-      addTimestamp: true
+      filename: "document.md",
+      addTimestamp: true,
     });
-    showMessage('文件已保存', 'success');
+    showMessage("文件已保存", "success");
   } catch (error) {
-    showMessage((error as Error).message, 'error');
+    showMessage((error as Error).message, "error");
   }
 };
 
@@ -540,24 +527,24 @@ const copyContent = async () => {
 
   const content = editor.getValue();
   if (!content.trim()) {
-    showMessage('内容为空', 'error');
+    showMessage("内容为空", "error");
     return;
   }
 
   const success = await copyToClipboard(content);
   if (success) {
-    showMessage('已复制到剪贴板', 'success');
+    showMessage("已复制到剪贴板", "success");
   } else {
-    showMessage('复制失败', 'error');
+    showMessage("复制失败", "error");
   }
 };
 
 // 清空内容
 const clearContent = () => {
   if (!editor) return;
-  editor.setValue('', -1);
-  markdownContent.value = '';
-  showMessage('内容已清空', 'success');
+  editor.setValue("", -1);
+  markdownContent.value = "";
+  showMessage("内容已清空", "success");
 };
 
 onMounted(() => {
@@ -573,35 +560,19 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
-.tool-btn {
-  @apply flex items-center px-3 py-2 bg-white border border-gray-300 rounded-md text-sm text-gray-700 font-medium;
-  @apply hover:bg-gray-50 hover:border-gray-400 transition-all cursor-pointer;
-  @apply active:bg-gray-100;
-}
-
-.tool-btn.active {
-  @apply bg-blue-50 border-blue-400 text-blue-700;
-}
-
-.tool-btn-icon {
-  @apply flex items-center justify-center w-10 h-10 bg-white border border-gray-300 rounded-md text-gray-600;
-  @apply hover:bg-gray-50 hover:border-gray-400 hover:text-gray-800 transition-all cursor-pointer;
-  @apply active:bg-gray-100;
-}
-
-.tool-btn-icon:hover {
-  color: #1f2937;
-}
-
 .format-icon-btn {
   @apply flex items-center justify-center w-7 h-7 rounded text-gray-600;
   @apply hover:bg-gray-200 hover:text-gray-900 transition-all cursor-pointer;
   @apply active:bg-gray-300;
 }
 
+.active {
+  @apply bg-blue-50 border-blue-400 text-blue-700;
+}
+
 /* Ace 编辑器样式覆盖 */
 :deep(.ace_editor) {
-  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', monospace !important;
+  font-family: "Monaco", "Menlo", "Ubuntu Mono", "Consolas", monospace !important;
 }
 
 :deep(.ace_gutter) {
@@ -615,7 +586,8 @@ onUnmounted(() => {
 
 /* Markdown 预览样式 */
 .markdown-preview {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", sans-serif;
   font-size: 16px;
   line-height: 1.6;
   color: #333;
@@ -674,7 +646,7 @@ onUnmounted(() => {
   background-color: #f3f4f6;
   padding: 2px 6px;
   border-radius: 3px;
-  font-family: 'Monaco', 'Menlo', 'Consolas', monospace;
+  font-family: "Monaco", "Menlo", "Consolas", monospace;
   font-size: 0.9em;
 }
 
