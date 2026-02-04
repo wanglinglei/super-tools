@@ -25,6 +25,14 @@ const codeRoutes: RouteRecordRaw = {
         title: "URL 编解码",
       },
     },
+    {
+      path: "base64",
+      name: ROUTER_NAME.CODE_BASE64,
+      component: () => import("@/views/code/base64/index.vue"),
+      meta: {
+        title: "Base64 编解码",
+      },
+    },
   ],
 };
 

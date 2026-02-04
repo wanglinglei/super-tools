@@ -1,5 +1,11 @@
-export type ToolColor = "blue" | "indigo" | "green" | "purple" | "pink" | "yellow";
-import { ROUTER_NAME } from '@/router/constants';
+export type ToolColor =
+  | "blue"
+  | "indigo"
+  | "green"
+  | "purple"
+  | "pink"
+  | "yellow";
+import { ROUTER_NAME } from "@/router/constants";
 export interface Tool {
   name: string;
   icon: string;
@@ -107,7 +113,7 @@ export const codeTools: Tool[] = [
     icon: "🔍",
     title: "正则测试",
     description: "在线测试和调试正则表达式，支持匹配结果预览和常用正则模板",
-    routeName: "code-regex",
+    routeName: ROUTER_NAME.CODE_REGEX,
     color: "indigo",
   },
   {
@@ -115,8 +121,16 @@ export const codeTools: Tool[] = [
     icon: "🔗",
     title: "URL 编解码",
     description: "URL 编码和解码工具，支持多种编码方式和常用示例",
-    routeName: "code-url-parser",
+    routeName: ROUTER_NAME.CODE_URL_PARSER,
     color: "blue",
+  },
+  {
+    name: "base64",
+    icon: "🔐",
+    title: "Base64 编解码",
+    description: "文本和图片的 Base64 编码解码，支持 UTF-8 和多种图片格式",
+    routeName: ROUTER_NAME.CODE_BASE64,
+    color: "purple",
   },
 ];
 
@@ -142,23 +156,24 @@ export const comingTools: ComingTool[] = [
     title: "单位转换",
     description: "长度、重量、温度等单位快速转换",
   },
-  {
-    name: "base64",
-    icon: "🔐",
-    title: "Base64 编解码",
-    description: "文本和图片的 Base64 编码解码",
-  },
 ];
 
 /**
  * 工具分类颜色类型
  */
-export type SectionColor = 'blue' | 'green' | 'yellow' | 'purple' | 'red' | 'pink' | 'indigo';
+export type SectionColor =
+  | "blue"
+  | "green"
+  | "yellow"
+  | "purple"
+  | "red"
+  | "pink"
+  | "indigo";
 
 /**
  * 工具分类卡片类型
  */
-export type CardType = 'tool' | 'coming';
+export type CardType = "tool" | "coming";
 
 /**
  * 工具分类配置接口
@@ -177,38 +192,38 @@ export interface ToolSection {
  */
 export const toolSections: ToolSection[] = [
   {
-    id: 'editor',
-    title: '📝 编辑器工具',
-    accentColor: 'blue',
-    cardType: 'tool',
+    id: "editor",
+    title: "📝 编辑器工具",
+    accentColor: "blue",
+    cardType: "tool",
     tools: editorTools,
   },
   {
-    id: 'map',
-    title: '🗺️ 地图工具',
-    accentColor: 'green',
-    cardType: 'tool',
+    id: "map",
+    title: "🗺️ 地图工具",
+    accentColor: "green",
+    cardType: "tool",
     tools: mapTools,
   },
   {
-    id: 'code',
-    title: '💻 编码工具',
-    accentColor: 'indigo',
-    cardType: 'tool',
+    id: "code",
+    title: "💻 编码工具",
+    accentColor: "indigo",
+    cardType: "tool",
     tools: codeTools,
   },
   {
-    id: 'general',
-    title: '🔧 通用工具',
-    accentColor: 'yellow',
-    cardType: 'tool',
+    id: "general",
+    title: "🔧 通用工具",
+    accentColor: "yellow",
+    cardType: "tool",
     tools: generalTools,
   },
   {
-    id: 'coming',
-    title: '🚀 更多工具',
-    accentColor: 'purple',
-    cardType: 'coming',
+    id: "coming",
+    title: "🚀 更多工具",
+    accentColor: "purple",
+    cardType: "coming",
     tools: comingTools,
   },
 ];
