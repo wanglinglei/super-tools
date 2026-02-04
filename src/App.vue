@@ -1,22 +1,50 @@
 <script setup lang="ts">
-import { RouterView } from 'vue-router'
+import { RouterView } from "vue-router";
 </script>
 
 <template>
-  <router-view />
+  <router-view v-slot="{ Component, route }">
+    <transition :name="route.meta.transition || 'fade'" mode="out-in">
+      <component :is="Component" :key="route.path" />
+    </transition>
+  </router-view>
 </template>
 
-<style scoped>
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
+<style>
+/* 路由过渡动画 */
+
+/* 淡入淡出（默认） */
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.2s ease;
 }
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
 }
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
+
+/* 滑动效果 */
+.slide-enter-active,
+.slide-leave-active {
+  transition: all 0.25s ease-out;
+}
+.slide-enter-from {
+  opacity: 0;
+  transform: translateX(20px);
+}
+.slide-leave-to {
+  opacity: 0;
+  transform: translateX(-20px);
+}
+
+/* 缩放效果 */
+.scale-enter-active,
+.scale-leave-active {
+  transition: all 0.2s ease;
+}
+.scale-enter-from,
+.scale-leave-to {
+  opacity: 0;
+  transform: scale(0.96);
 }
 </style>

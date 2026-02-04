@@ -6,9 +6,8 @@
  * @LastEditTime: 2026-01-28 16:39:47
  */
 
-
 // 文件下载相关
-export { downloadFile } from './file';
+export { downloadFile } from "./file";
 
 // 快捷方法（语法糖）
 export {
@@ -16,7 +15,7 @@ export {
   downloadMarkdown,
   downloadText,
   downloadImage,
-} from './file';
+} from "./file";
 
 // 剪贴板相关
 export {
@@ -24,4 +23,11 @@ export {
   copyWithCallback,
   isClipboardSupported,
   readFromClipboard,
-} from './clipboard';
+} from "./clipboard";
+
+// 错误处理相关
+export {
+  setupErrorHandler,
+  getErrorQueue,
+  clearErrorQueue,
+} from "./errorHandler";
