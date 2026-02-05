@@ -410,7 +410,7 @@ const decodeBase64ToImage = (base64: string) => {
   } else {
     // 从 Data URI 提取 MIME 类型
     const match = dataUri.match(/^data:([^;]+);base64,/);
-    if (match) {
+    if (match?.[1]) {
       imageMimeType.value = match[1];
     }
   }
@@ -470,7 +470,7 @@ const processImage = (file: File) => {
     imageSize.value = file.size;
 
     // 提取纯 Base64（不含 Data URI 前缀）
-    const base64 = dataUri.split(",")[1];
+    const base64 = dataUri.split(",")[1] || "";
     outputText.value = base64;
 
     showMessage("图片已转换为 Base64", "success");

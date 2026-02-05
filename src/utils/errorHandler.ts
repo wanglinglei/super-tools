@@ -54,7 +54,7 @@ function getComponentName(vm: ComponentPublicInstance | null): string {
   const file = vm.$options?.__file;
   if (file) {
     const match = file.match(/([^/\\]+)\.vue$/);
-    return match ? match[1] : "Anonymous";
+    return match?.[1] || "Anonymous";
   }
 
   return "Anonymous";
@@ -83,7 +83,7 @@ function setupVueErrorHandler(app: App) {
 
   // Vue 警告处理（仅开发环境）
   if (import.meta.env.DEV) {
-    app.config.warnHandler = (msg, vm, trace) => {
+    app.config.warnHandler = (msg, _vm, trace) => {
       console.warn(`⚠️ [Vue Warn] ${msg}`);
       if (trace) {
         console.warn("Trace:", trace);
