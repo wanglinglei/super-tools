@@ -5,12 +5,12 @@
 /**
  * 对比视图模式
  */
-export const VIEW_MODES = [
+export type ViewMode = "unified" | "side-by-side";
+
+export const VIEW_MODES: { key: ViewMode; label: string }[] = [
   { key: "unified", label: "统一视图" },
   { key: "side-by-side", label: "并排视图" },
-] as const;
-
-export type ViewMode = (typeof VIEW_MODES)[number]["key"];
+];
 
 /**
  * Diff 行类型
@@ -149,10 +149,10 @@ export function computeDiff(
 
   for (let i = 1; i <= m; i++) {
     for (let j = 1; j <= n; j++) {
-      if (compareLine(oldLines[i - 1], newLines[j - 1])) {
-        dp[i][j] = dp[i - 1][j - 1] + 1;
+      if (compareLine(oldLines[i - 1]!, newLines[j - 1]!)) {
+        dp[i]![j] = dp[i - 1]![j - 1]! + 1;
       } else {
-        dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+        dp[i]![j] = Math.max(dp[i - 1]![j]!, dp[i]![j - 1]!);
       }
     }
   }
@@ -163,26 +163,26 @@ export function computeDiff(
   let j = n;
 
   while (i > 0 || j > 0) {
-    if (i > 0 && j > 0 && compareLine(oldLines[i - 1], newLines[j - 1])) {
+    if (i > 0 && j > 0 && compareLine(oldLines[i - 1]!, newLines[j - 1]!)) {
       result.unshift({
         type: "equal",
-        content: oldLines[i - 1],
+        content: oldLines[i - 1]!,
         oldLineNo: i,
         newLineNo: j,
       });
       i--;
       j--;
-    } else if (j > 0 && (i === 0 || dp[i][j - 1] >= dp[i - 1][j])) {
+    } else if (j > 0 && (i === 0 || dp[i]![j - 1]! >= dp[i - 1]![j]!)) {
       result.unshift({
         type: "added",
-        content: newLines[j - 1],
+        content: newLines[j - 1]!,
         newLineNo: j,
       });
       j--;
     } else {
       result.unshift({
         type: "removed",
-        content: oldLines[i - 1],
+        content: oldLines[i - 1]!,
         oldLineNo: i,
       });
       i--;
