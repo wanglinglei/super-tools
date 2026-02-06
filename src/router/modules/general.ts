@@ -41,6 +41,14 @@ const generalRoutes: RouteRecordRaw = {
         title: "颜色转换",
       },
     },
+    {
+      path: "diff",
+      name: ROUTER_NAME.GENERAL_DIFF,
+      component: () => import("@/views/general/diff/index.vue"),
+      meta: {
+        title: "文本 Diff",
+      },
+    },
   ],
 };
 

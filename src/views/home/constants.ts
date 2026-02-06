@@ -102,6 +102,14 @@ export const generalTools: Tool[] = [
     routeName: ROUTER_NAME.GENERAL_COLOR,
     color: "pink",
   },
+  {
+    name: "diff",
+    icon: "📄",
+    title: "文本 Diff",
+    description: "对比两段文本的差异，支持统一视图和并排视图，高亮显示变更",
+    routeName: ROUTER_NAME.GENERAL_DIFF,
+    color: "indigo",
+  },
 ];
 
 /**

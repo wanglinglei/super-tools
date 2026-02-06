@@ -11,4 +11,5 @@ export const ROUTER_NAME = {
   CODE_REGEX: "code-regex",
   CODE_URL_PARSER: "code-url-parser",
   CODE_BASE64: "code-base64",
+  GENERAL_DIFF: "general-diff",
 };
