@@ -1,6 +1,6 @@
 # Super Tools - 超级工具集
 
-> 一个基于 Vue 3 + TypeScript 的在线工具集合，提供编辑器、地图、编码、通用工具等 12+ 实用功能。
+> 一个基于 Vue 3 + TypeScript 的在线工具集合，提供编辑器、地图、编码、通用工具等 13+ 实用功能。
 
 ## 🛠️ 技术栈
 
@@ -30,6 +30,8 @@
 - **全局错误处理** - 统一异常捕获
 - **路由过渡动画** - 页面切换动效
 - **模块化路由** - 按功能分组
+- **Husky** - Git pre-commit 钩子（自动类型检查）
+- **构建解耦** - TypeScript 类型检查与 Vite 构建独立运行
 
 ## 📁 项目结构
 
@@ -41,7 +43,7 @@ super-tools/
 │   │   │   └── MessageToast.vue
 │   │   ├── svgIcon/            # SVG 图标组件
 │   │   │   └── SvgIcon.vue
-│   │   ├── TabBar/             # Tab 切换组件
+│   │   ├── TabBar/             # Tab 切换组件（支持吸顶）
 │   │   │   └── TabBar.vue
 │   │   └── ToolButton/         # 工具按钮组件
 │   │       └── ToolButton.vue
@@ -77,6 +79,8 @@ super-tools/
 │   │   │   ├── index.vue
 │   │   │   ├── constants.ts
 │   │   │   └── components/
+│   │   │       ├── ToolCard.vue
+│   │   │       └── ComingSoonCard.vue
 │   │   │
 │   │   ├── editor/             # 编辑器工具
 │   │   │   ├── json/           # JSON 编辑器
@@ -89,14 +93,38 @@ super-tools/
 │   │   │
 │   │   ├── code/               # 编码工具
 │   │   │   ├── regex/          # 正则测试
-│   │   │   ├── urlParser/      # URL 编解码
+│   │   │   ├── urlParser/      # URL 编解码 + 参数编辑
+│   │   │   │   ├── components/
+│   │   │   │   │   ├── UrlEncoder.vue
+│   │   │   │   │   └── UrlParamsEditor.vue
+│   │   │   │   ├── constants.ts
+│   │   │   │   └── index.vue
 │   │   │   └── base64/         # Base64 编解码
+│   │   │       ├── components/
+│   │   │       │   ├── TextBase64.vue
+│   │   │       │   └── ImageBase64.vue
+│   │   │       ├── constants.ts
+│   │   │       └── index.vue
 │   │   │
 │   │   ├── general/            # 通用工具
 │   │   │   ├── timestamp/      # 时间戳转换
 │   │   │   ├── qrcode/         # 二维码工具
+│   │   │   │   ├── components/
+│   │   │   │   │   ├── QRCodeGenerator.vue
+│   │   │   │   │   └── QRCodeDecoder.vue
+│   │   │   │   └── index.vue
 │   │   │   ├── excel2json/     # Excel 转 JSON
-│   │   │   └── color/          # 颜色转换
+│   │   │   ├── color/          # 颜色转换 + 渐变色 + 取色器
+│   │   │   │   ├── components/
+│   │   │   │   │   ├── ColorPanel.vue
+│   │   │   │   │   ├── GradientPanel.vue
+│   │   │   │   │   └── ColorFormatCard.vue
+│   │   │   │   ├── constants.ts
+│   │   │   │   ├── transform.ts
+│   │   │   │   └── index.vue
+│   │   │   └── diff/           # 文本 Diff
+│   │   │       ├── constants.ts
+│   │   │       └── index.vue
 │   │   │
 │   │   └── error/              # 错误页面
 │   │       └── 404.vue
@@ -105,6 +133,8 @@ super-tools/
 │   ├── main.ts                  # 应用入口
 │   └── style.css                # 全局样式
 │
+├── .husky/                      # Git Hooks
+│   └── pre-commit              # commit 前自动类型检查
 ├── .env                         # 环境变量
 ├── vite.config.ts              # Vite 配置
 ├── uno.config.js               # UnoCSS 配置（含 Shortcuts）
@@ -133,11 +163,19 @@ pnpm dev
 
 访问 `http://localhost:5173/tools/`
 
+### 类型检查
+
+```bash
+pnpm type-check
+```
+
 ### 构建生产版本
 
 ```bash
 pnpm build
 ```
+
+> 注：构建仅运行 Vite，不会因 TypeScript 类型错误而阻断。类型检查通过 `pnpm type-check` 独立执行，且已在 Git pre-commit 钩子中自动运行。
 
 ### 预览生产构建
 
@@ -177,20 +215,21 @@ VITE_AMAP_SECURITY_JS_CODE=your_security_code
 
 ### 💻 编码工具
 
-| 工具名称      | 图标 | 路由                     |
-| ------------- | ---- | ------------------------ |
-| 正则测试      | 🔍   | `/tools/code/regex`      |
-| URL 编解码    | 🔗   | `/tools/code/url-parser` |
-| Base64 编解码 | 🔐   | `/tools/code/base64`     |
+| 工具名称      | 图标 | 路由                     | 功能说明                                   |
+| ------------- | ---- | ------------------------ | ------------------------------------------ |
+| 正则测试      | 🔍   | `/tools/code/regex`      | 正则表达式测试与匹配                       |
+| URL 编解码    | 🔗   | `/tools/code/url-parser` | URL 编码/解码 + Query 参数键值对可视化编辑 |
+| Base64 编解码 | 🔐   | `/tools/code/base64`     | 文本/图片 Base64 互转，支持拖拽上传        |
 
 ### 🔧 通用工具
 
-| 工具名称      | 图标 | 路由                        |
-| ------------- | ---- | --------------------------- |
-| 时间戳转换    | ⏰   | `/tools/general/timestamp`  |
-| 二维码工具    | 📱   | `/tools/general/qrcode`     |
-| Excel 转 JSON | 📊   | `/tools/general/excel2json` |
-| 颜色转换      | 🎨   | `/tools/general/color`      |
+| 工具名称      | 图标 | 路由                        | 功能说明                                   |
+| ------------- | ---- | --------------------------- | ------------------------------------------ |
+| 时间戳转换    | ⏰   | `/tools/general/timestamp`  | 时间戳与日期互转                           |
+| 二维码工具    | 📱   | `/tools/general/qrcode`     | 二维码生成（自定义颜色/图标）+ 二维码解码  |
+| Excel 转 JSON | 📊   | `/tools/general/excel2json` | Excel 文件解析为 JSON                      |
+| 颜色转换      | 🎨   | `/tools/general/color`      | HEX/RGB/HSL/HSV 互转、取色器、渐变色生成器 |
+| 文本 Diff     | 📄   | `/tools/general/diff`       | 文本差异对比，支持统一/并排视图            |
 
 ## 🎨 组件系统
 
@@ -301,14 +340,32 @@ VITE_AMAP_SECURITY_JS_CODE=your_security_code
    }
    ```
 
+### 组件拆分规范
+
+页面模板过长时应拆分子组件，放在页面同级 `components/` 目录下：
+
+```
+src/views/{分类}/{工具名}/
+├── index.vue              # 主页面（Tab 切换、布局）
+├── constants.ts           # 常量配置
+└── components/            # 子组件
+    ├── FeatureA.vue
+    └── FeatureB.vue
+```
+
+子组件通过 `props` / `emit` / `inject` 与父组件通信，通过 `defineExpose` 暴露方法供父组件调用。
+
 ### 代码规范
 
 - 使用 TypeScript 编写
 - 组件使用 `<script setup>` 语法
 - 样式优先使用 UnoCSS Shortcuts
 - 遵循 Vue 3 Composition API 最佳实践
+- Git commit 前自动进行 TypeScript 类型检查
 
 ## 📝 TODO
+
+### 已完成
 
 - [x] ~~添加时间戳转换工具~~
 - [x] ~~添加二维码生成工具~~
@@ -318,6 +375,17 @@ VITE_AMAP_SECURITY_JS_CODE=your_security_code
 - [x] ~~添加正则表达式测试工具~~
 - [x] ~~添加 URL 编解码工具~~
 - [x] ~~添加 Base64 编解码工具~~
+- [x] ~~添加文本 Diff 对比工具~~
+- [x] ~~颜色工具扩展：渐变色生成器（线性/径向/锥形 + 预设）~~
+- [x] ~~颜色工具扩展：取色器（屏幕取色 + 图片取色 + 历史记录）~~
+- [x] ~~URL 工具扩展：Query 参数键值对可视化编辑~~
+- [x] ~~Tab 吸顶交互优化~~
+- [x] ~~大页面组件拆分（颜色、二维码、Base64、URL）~~
+- [x] ~~构建解耦：TypeScript 类型检查与 Vite 构建独立运行~~
+- [x] ~~Git pre-commit 钩子自动类型检查~~
+
+### 计划中
+
 - [ ] 添加更多编辑器工具（SQL、CSS、HTML）
 - [ ] 地图工具扩展（面积计算、路径规划）
 - [ ] 添加单位转换工具
@@ -331,16 +399,17 @@ VITE_AMAP_SECURITY_JS_CODE=your_security_code
 
 ### 一、在现有工具上增强
 
-| 工具              | 可扩展能力                                          |
-| ----------------- | --------------------------------------------------- |
-| **Base64**        | 增加 Base64URL、多行/单行切换、批量编解码、文件拖拽 |
-| **时间戳**        | 时区选择、Cron 表达式生成、相对时间（如「3 天前」） |
-| **正则**          | 正则替换（replace）、常用正则库/收藏、匹配高亮      |
-| **URL 编解码**    | Query 解析为键值对编辑、批量 URL 处理               |
-| **颜色**          | 色板/历史记录、渐变色生成、取色器从图片取色         |
-| **二维码**        | 批量生成、样式模板、解析历史                        |
-| **Excel 转 JSON** | 支持 JSON 转 Excel 导出、多 Sheet、列映射预设       |
-| **地图**          | 面积测量、路径规划、坐标批量转换、收藏点位          |
+| 工具              | 可扩展能力                                                  | 状态     |
+| ----------------- | ----------------------------------------------------------- | -------- |
+| **Base64**        | 增加 Base64URL、多行/单行切换、批量编解码                   | 待开发   |
+| **时间戳**        | 时区选择、Cron 表达式生成、相对时间（如「3 天前」）         | 待开发   |
+| **正则**          | 正则替换（replace）、常用正则库/收藏、匹配高亮              | 待开发   |
+| **URL 编解码**    | ~~Query 解析为键值对编辑~~、批量 URL 处理                   | 部分完成 |
+| **颜色**          | ~~渐变色生成~~、~~取色器从图片/屏幕取色~~、~~色板历史记录~~ | 已完成   |
+| **二维码**        | 批量生成、样式模板、解析历史                                | 待开发   |
+| **Excel 转 JSON** | 支持 JSON 转 Excel 导出、多 Sheet、列映射预设               | 待开发   |
+| **地图**          | 面积测量、路径规划、坐标批量转换、收藏点位                  | 待开发   |
+| **文本 Diff**     | 字符级 Diff、语法高亮、文件对比                             | 待开发   |
 
 ### 二、编码工具类（与 Base64/URL/正则同体系）
 
@@ -360,7 +429,7 @@ VITE_AMAP_SECURITY_JS_CODE=your_security_code
 - **单位转换**：长度、重量、温度、存储单位等（已有 coming）。
 - **UUID/随机数**：批量生成 UUID、随机字符串、随机数范围。
 - **Cron 表达式**：可视化生成 Cron、下次执行时间预览。
-- **文本 Diff**：两段文本对比、高亮差异（可复用 Ace 或简单实现）。
+- ~~**文本 Diff**~~：✅ 已实现（LCS 算法、统一/并排视图）。
 - **图片压缩**：上传图片、设置质量/尺寸、下载压缩后图片。
 
 ### 五、地图类
@@ -377,7 +446,7 @@ VITE_AMAP_SECURITY_JS_CODE=your_security_code
 - **PWA**：离线可用、安装到桌面，与现有 Vite 构建兼容。
 - **多语言**：若后续有国际化需求，可对 `constants` 与路由 meta 做 i18n。
 
-新增工具时建议：在 `src/views/{分类}/{工具名}/` 下建 `index.vue` + `constants.ts`，在 `router/constants.ts` 与对应 `router/modules/*.ts` 中注册路由，最后在 `src/views/home/constants.ts` 的对应分类和 `comingTools` 中更新配置。
+新增工具时建议：在 `src/views/{分类}/{工具名}/` 下建 `index.vue` + `constants.ts`，在 `router/constants.ts` 与对应 `router/modules/*.ts` 中注册路由，最后在 `src/views/home/constants.ts` 的对应分类和 `comingTools` 中更新配置。页面模板复杂时按功能拆分子组件到同级 `components/` 目录。
 
 ## 📄 License
 
