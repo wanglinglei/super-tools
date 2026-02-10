@@ -153,6 +153,39 @@ const icons: Record<string, any> = {
       ];
     },
   }),
+
+  // 撤销图标
+  undo: defineComponent({
+    setup() {
+      return () => [
+        h("path", { d: "M3 7v6h6" }),
+        h("path", { d: "M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13" }),
+      ];
+    },
+  }),
+
+  // 重做图标
+  redo: defineComponent({
+    setup() {
+      return () => [
+        h("path", { d: "M21 7v6h-6" }),
+        h("path", { d: "M3 17a9 9 0 0 1 9-9 9 9 0 0 1 6 2.3l3 2.7" }),
+      ];
+    },
+  }),
+
+  // 保存图标
+  save: defineComponent({
+    setup() {
+      return () => [
+        h("path", {
+          d: "M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z",
+        }),
+        h("polyline", { points: "17 21 17 13 7 13 7 21" }),
+        h("polyline", { points: "7 3 7 8 15 8" }),
+      ];
+    },
+  }),
 };
 
 const iconComponent = computed(() => {

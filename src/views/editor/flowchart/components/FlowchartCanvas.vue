@@ -335,12 +335,118 @@ import {
   DEFAULT_CONNECTIONS,
 } from "../constants";
 
+// ==================== 历史记录状态 ====================
+
+interface HistoryState {
+  nodes: FlowNode[];
+  connections: FlowConnection[];
+}
+
+const history = ref<HistoryState[]>([]);
+const historyIndex = ref(-1);
+const MAX_HISTORY = 50;
+
 // ==================== 数据状态 ====================
 
 const nodes = ref<FlowNode[]>(JSON.parse(JSON.stringify(DEFAULT_NODES)));
 const connections = ref<FlowConnection[]>(
   JSON.parse(JSON.stringify(DEFAULT_CONNECTIONS))
 );
+
+// ==================== 历史记录管理 ====================
+
+/**
+ * 记录当前状态到历史记录
+ */
+function recordState() {
+  // 如果当前处于历史记录中间，删除后面的记录
+  if (historyIndex.value < history.value.length - 1) {
+    history.value = history.value.slice(0, historyIndex.value + 1);
+  }
+
+  // 添加新记录
+  history.value.push({
+    nodes: JSON.parse(JSON.stringify(nodes.value)),
+    connections: JSON.parse(JSON.stringify(connections.value)),
+  });
+
+  // 限制历史记录长度
+  if (history.value.length > MAX_HISTORY) {
+    history.value.shift();
+  } else {
+    historyIndex.value++;
+  }
+}
+
+/**
+ * 撤销
+ */
+function undo() {
+  if (historyIndex.value > 0) {
+    historyIndex.value--;
+    const state = history.value[historyIndex.value];
+    nodes.value = JSON.parse(JSON.stringify(state?.nodes));
+    connections.value = JSON.parse(JSON.stringify(state?.connections));
+    selectedNodeId.value = null;
+    selectedConnectionId.value = null;
+  }
+}
+
+/**
+ * 重做
+ */
+function redo() {
+  if (historyIndex.value < history.value.length - 1) {
+    historyIndex.value++;
+    const state = history.value[historyIndex.value];
+    nodes.value = JSON.parse(JSON.stringify(state?.nodes));
+    connections.value = JSON.parse(JSON.stringify(state?.connections));
+    selectedNodeId.value = null;
+    selectedConnectionId.value = null;
+  }
+}
+
+/**
+ * 获取撤销/重做可用状态
+ */
+function getHistoryStatus() {
+  return {
+    canUndo: historyIndex.value > 0,
+    canRedo: historyIndex.value < history.value.length - 1,
+  };
+}
+
+// ==================== 数据导入导出 ====================
+
+/**
+ * 导出数据为 JSON 对象
+ */
+function exportJson() {
+  return {
+    version: "1.0",
+    nodes: nodes.value,
+    connections: connections.value,
+  };
+}
+
+/**
+ * 导入 JSON 数据
+ */
+function importJson(data: any) {
+  if (!data || !Array.isArray(data.nodes) || !Array.isArray(data.connections)) {
+    throw new Error("无效的数据格式");
+  }
+
+  nodes.value = data.nodes;
+  connections.value = data.connections;
+  selectedNodeId.value = null;
+  selectedConnectionId.value = null;
+
+  // 重置历史记录
+  history.value = [];
+  historyIndex.value = -1;
+  recordState();
+}
 
 // ==================== DOM 引用 ====================
 
@@ -646,6 +752,16 @@ function onCanvasMouseMove(e: MouseEvent) {
 }
 
 function onCanvasMouseUp(_e: MouseEvent) {
+  // 如果发生了拖拽，且位置发生了变化，记录状态
+  if (isDragging.value && dragNodeId.value) {
+    const node = findNodeById(dragNodeId.value);
+    if (node) {
+      // 简单的判断：如果当前状态与历史记录的最新状态不同，则记录
+      // 这里简化处理，每次拖拽结束都记录，实际应用中可以比较坐标
+      recordState();
+    }
+  }
+
   isDragging.value = false;
   dragNodeId.value = null;
   isPanning.value = false;
@@ -741,6 +857,7 @@ function onPortMouseUp(port: PortInfo) {
       fromPort: from.direction,
       toPort: port.direction,
     });
+    recordState();
   }
 
   cancelConnecting();
@@ -764,7 +881,11 @@ function finishEditing() {
   if (!editingNodeId.value) return;
   const node = findNodeById(editingNodeId.value);
   if (node && editingText.value.trim()) {
-    node.text = editingText.value.trim();
+    const oldText = node.text;
+    if (oldText !== editingText.value.trim()) {
+      node.text = editingText.value.trim();
+      recordState();
+    }
   }
   editingNodeId.value = null;
   editingText.value = "";
@@ -800,10 +921,12 @@ function onKeyDown(e: KeyboardEvent) {
 
     if (selectedNodeId.value) {
       deleteNode(selectedNodeId.value);
+      recordState();
       return;
     }
     if (selectedConnectionId.value) {
       deleteConnection(selectedConnectionId.value);
+      recordState();
       return;
     }
   }
@@ -872,6 +995,9 @@ onMounted(() => {
   updateContainerSize();
   document.addEventListener("keydown", onKeyDown);
 
+  // 记录初始状态
+  recordState();
+
   resizeObserver = new ResizeObserver(() => {
     updateContainerSize();
   });
@@ -925,6 +1051,8 @@ function addNode(type: NodeType) {
     height: config.defaultHeight,
     text: config.defaultText,
   });
+
+  recordState();
 }
 
 /**
@@ -936,6 +1064,7 @@ function clearAll() {
   selectedNodeId.value = null;
   selectedConnectionId.value = null;
   editingNodeId.value = null;
+  recordState();
 }
 
 /**
@@ -948,6 +1077,7 @@ function reset() {
   selectedConnectionId.value = null;
   editingNodeId.value = null;
   resetView();
+  recordState();
 }
 
 /**
@@ -1065,6 +1195,11 @@ defineExpose({
   exportSvg,
   exportPng,
   getStats,
+  undo,
+  redo,
+  getHistoryStatus,
+  exportJson,
+  importJson,
 });
 </script>
 
