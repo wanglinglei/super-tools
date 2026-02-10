@@ -25,6 +25,14 @@ const editorRoutes: RouteRecordRaw = {
         title: "Markdown 编辑器",
       },
     },
+    {
+      path: "flowchart",
+      name: ROUTER_NAME.EDITOR_FLOWCHART,
+      component: () => import("@/views/editor/flowchart/index.vue"),
+      meta: {
+        title: "流程图编辑器",
+      },
+    },
   ],
 };
 

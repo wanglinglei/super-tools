@@ -42,6 +42,14 @@ export const editorTools: Tool[] = [
     routeName: ROUTER_NAME.EDITOR_MARKDOWN,
     color: "indigo",
   },
+  {
+    name: "flowchart-editor",
+    icon: "💠",
+    title: "流程图编辑器",
+    description: "可视化流程图编辑器，支持拖拽节点、连线、导出 SVG/PNG",
+    routeName: ROUTER_NAME.EDITOR_FLOWCHART,
+    color: "green",
+  },
 ];
 
 /**
