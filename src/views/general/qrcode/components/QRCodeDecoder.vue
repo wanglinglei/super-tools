@@ -107,7 +107,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, inject } from "vue";
+import { ref, inject, onMounted, onUnmounted } from "vue";
 import jsQR from "jsqr";
 import { copyToClipboard } from "@/utils";
 import type { MessageType } from "@/composables/useMessage";
@@ -122,6 +122,30 @@ const decoding = ref(false);
 const decodeResult = ref("");
 const decodeError = ref("");
 
+// 监听粘贴事件
+const handlePaste = (e: ClipboardEvent) => {
+  const items = e.clipboardData?.items;
+  if (!items) return;
+
+  for (const item of items) {
+    if (item.type.startsWith("image/")) {
+      const file = item.getAsFile();
+      if (file) {
+        processFile(file);
+        return; // 只处理第一张图片
+      }
+    }
+  }
+};
+
+onMounted(() => {
+  document.addEventListener("paste", handlePaste);
+});
+
+onUnmounted(() => {
+  document.removeEventListener("paste", handlePaste);
+});
+
 // 选择要解码的图片
 const selectDecodeImage = () => {
   decodeInputRef.value?.click();
@@ -133,6 +157,14 @@ const handleDecodeImage = async (event: Event) => {
   const file = target.files?.[0];
   if (!file) return;
 
+  processFile(file);
+  
+  // 清空 input，以便可以重复选择同一文件
+  target.value = "";
+};
+
+// 统一处理文件
+const processFile = async (file: File) => {
   if (!file.type.startsWith("image/")) {
     showMessage("请选择图片文件", "error");
     return;
@@ -150,10 +182,6 @@ const handleDecodeImage = async (event: Event) => {
       await decodeQRCode(imageData);
     };
     reader.readAsDataURL(file);
-
-    if (target) {
-      target.value = "";
-    }
   } catch (error) {
     console.error("处理图片失败:", error);
     decoding.value = false;

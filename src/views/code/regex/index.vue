@@ -78,15 +78,24 @@
         </div>
 
         <!-- 测试文本输入 -->
-        <div class="card-p">
+        <div class="card-p flex flex-col h-[400px]">
           <h2 class="text-title mb-3">📝 测试文本</h2>
-          <div class="space-y-3">
+          <div class="relative flex-1 min-h-0 border border-gray-300 rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-blue-500">
+            <!-- 高亮层 (Backdrop) -->
+            <div 
+              ref="backdropRef"
+              class="absolute inset-0 p-3 font-mono text-sm whitespace-pre-wrap break-all pointer-events-none overflow-hidden text-transparent bg-white"
+              v-html="highlightedText"
+            ></div>
+            
+            <!-- 输入层 (Textarea) -->
             <textarea
               v-model="testText"
               placeholder="输入要测试的文本内容..."
-              class="textarea-base font-mono"
-              rows="10"
+              class="absolute inset-0 w-full h-full p-3 font-mono text-sm bg-transparent text-gray-800 caret-black resize-none focus:outline-none whitespace-pre-wrap break-all"
+              spellcheck="false"
               @input="handleRegexChange"
+              @scroll="syncScroll"
             ></textarea>
           </div>
         </div>
@@ -264,6 +273,60 @@ const regexError = ref("");
 const matches = ref<Array<{ value: string; index: number; groups?: string[] }>>(
   []
 );
+const backdropRef = ref<HTMLDivElement | null>(null);
+
+// 同步滚动
+const syncScroll = (e: Event) => {
+  const target = e.target as HTMLTextAreaElement;
+  if (backdropRef.value) {
+    backdropRef.value.scrollTop = target.scrollTop;
+    backdropRef.value.scrollLeft = target.scrollLeft;
+  }
+};
+
+// 高亮文本
+const highlightedText = computed(() => {
+  if (!testText.value) return "";
+  if (!regexPattern.value || regexError.value) {
+    // 没有正则或正则错误时，只显示原始文本（转义）
+    return escapeHtml(testText.value);
+  }
+
+  try {
+    const flags = selectedFlags.value.join("");
+    // 确保有 g 标志，否则 replace 只替换第一个
+    const regex = new RegExp(regexPattern.value, flags.includes("g") ? flags : flags + "g");
+    
+    // 使用 replace 替换匹配项为带样式的 span
+    // 注意：这里需要处理 HTML 转义，防止 XSS
+    // 先将整个文本转义，然后再把匹配项替换回来（这种方式对于简单的正则可以，但对于包含 HTML 特殊字符的正则可能会有问题）
+    // 更稳妥的方式是：手动切分字符串
+    
+    const text = testText.value;
+    
+    // 重新执行正则以获取所有匹配项的位置（因为 matches 可能还没更新或不包含所有信息）
+    // 这里为了简单，直接使用 matches 中的信息（假设 handleRegexChange 已经执行）
+    // 但 handleRegexChange 是异步更新 matches 的吗？不是，是同步的。
+    // 不过 computed 依赖 matches 可能会导致循环依赖或时序问题。
+    // 最好在这里重新匹配一次，或者直接利用 replace 的回调。
+    
+    return text.replace(regex, (match) => {
+      return `<span class="bg-yellow-200 text-gray-800 rounded-sm">${escapeHtml(match)}</span>`;
+    }).replace(/\n/g, "<br>"); // 处理换行
+    
+  } catch (e) {
+    return escapeHtml(testText.value).replace(/\n/g, "<br>");
+  }
+});
+
+function escapeHtml(text: string) {
+  return text
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
 
 // 从常量导入配置
 const regexFlags = REGEX_FLAGS;

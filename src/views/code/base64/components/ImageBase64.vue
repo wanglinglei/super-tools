@@ -108,33 +108,47 @@ const imageInfo = computed(() => {
  */
 const decodeBase64ToImage = (base64: string) => {
   let dataUri = base64.trim();
+  let mimeType = "";
 
   // 如果不是完整的 Data URI，尝试添加前缀
   if (!dataUri.startsWith("data:")) {
-    // 尝试检测图片类型
-    const header = atob(dataUri.slice(0, 20));
-    let mimeType = "image/png"; // 默认
+    try {
+      // 尝试检测图片类型
+      const header = atob(dataUri.slice(0, 30));
+      
+      if (header.startsWith("\x89PNG")) {
+        mimeType = "image/png";
+      } else if (header.startsWith("\xFF\xD8")) {
+        mimeType = "image/jpeg";
+      } else if (header.startsWith("GIF")) {
+        mimeType = "image/gif";
+      } else if (header.startsWith("RIFF") && header.indexOf("WEBP") > 0) {
+        mimeType = "image/webp";
+      } else if (header.trim().startsWith("<svg") || header.includes("<svg")) {
+        mimeType = "image/svg+xml";
+      } else {
+        // 未识别到已知图片头，视为非图片数据
+        throw new Error("未识别到有效的图片文件头");
+      }
 
-    if (header.startsWith("\x89PNG")) {
-      mimeType = "image/png";
-    } else if (header.startsWith("\xFF\xD8")) {
-      mimeType = "image/jpeg";
-    } else if (header.startsWith("GIF")) {
-      mimeType = "image/gif";
-    } else if (header.startsWith("RIFF") && header.includes("WEBP")) {
-      mimeType = "image/webp";
+      dataUri = `data:${mimeType};base64,${base64}`;
+    } catch (e) {
+      throw e;
     }
-
-    dataUri = `data:${mimeType};base64,${base64}`;
-    imageMimeType.value = mimeType;
   } else {
     // 从 Data URI 提取 MIME 类型
     const match = dataUri.match(/^data:([^;]+);base64,/);
     if (match?.[1]) {
-      imageMimeType.value = match[1];
+      mimeType = match[1];
+      if (!mimeType.startsWith("image/")) {
+        throw new Error("非图片类型的 Data URI");
+      }
+    } else {
+      throw new Error("无效的 Data URI 格式");
     }
   }
 
+  imageMimeType.value = mimeType;
   imagePreview.value = dataUri;
 
   // 计算大小
@@ -205,9 +219,22 @@ const processImage = (file: File) => {
  * 处理 Base64 输入（图片模式）
  */
 const handleBase64Input = () => {
-  // 用户手动输入 Base64 时，清除预览
-  if (!imagePreview.value) {
-    // 可以在这里添加自动解码逻辑
+  const val = outputText.value.trim();
+  if (!val) {
+    imagePreview.value = "";
+    imageMimeType.value = "";
+    imageSize.value = 0;
+    return;
+  }
+  
+  // 尝试自动预览
+  try {
+    decodeBase64ToImage(val);
+  } catch (e) {
+    // 忽略无效 Base64 导致的预览错误，等待用户输入完整
+    imagePreview.value = "";
+    imageMimeType.value = "";
+    imageSize.value = 0;
   }
 };
 
@@ -215,7 +242,12 @@ const handleBase64Input = () => {
  * 处理编码（图片模式下主要是提示）
  */
 const handleEncode = () => {
-  showMessage("请上传图片进行编码", "info");
+  if (imagePreview.value) {
+    // 已经有图片了，再次触发处理（其实没必要，但为了响应按钮点击）
+    showMessage("图片已编码", "success");
+  } else {
+    selectImage(); // 触发文件选择
+  }
 };
 
 /**
@@ -230,6 +262,16 @@ const handleDecode = () => {
     decodeBase64ToImage(outputText.value);
     showMessage("解码成功", "success");
   } catch (error) {
+    // 如果不是图片，尝试作为普通文本解码并提示
+    try {
+      const text = decodeURIComponent(escape(atob(outputText.value)));
+      if (text) {
+        showMessage("这不是图片数据，请切换到文本模式查看", "info");
+        return;
+      }
+    } catch (e) {
+      // 忽略文本解码错误
+    }
     showMessage("解码失败: 无效的图片 Base64", "error");
   }
 };
