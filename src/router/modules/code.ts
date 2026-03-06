@@ -33,6 +33,14 @@ const codeRoutes: RouteRecordRaw = {
         title: "Base64 编解码",
       },
     },
+    {
+      path: "jwt",
+      name: ROUTER_NAME.CODE_JWT,
+      component: () => import("@/views/code/jwt/index.vue"),
+      meta: {
+        title: "JWT 解码",
+      },
+    },
   ],
 };
 

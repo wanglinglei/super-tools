@@ -14,6 +14,7 @@
     "@amap/amap-jsapi-loader": "^1.0.1",
     "@types/qrcode": "^1.5.6",
     "ace-builds": "^1.43.6",
+    "cron-parser": "^5.5.0",
     "diff": "^8.0.3",
     "jsqr": "^1.4.0",
     "marked": "^17.0.1",

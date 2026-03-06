@@ -49,6 +49,14 @@ const generalRoutes: RouteRecordRaw = {
         title: "文本 Diff",
       },
     },
+    {
+      path: "cron",
+      name: ROUTER_NAME.GENERAL_CRON,
+      component: () => import("@/views/general/cron/index.vue"),
+      meta: {
+        title: "Cron 表达式",
+      },
+    },
   ],
 };
 

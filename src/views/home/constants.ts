@@ -118,6 +118,14 @@ export const generalTools: Tool[] = [
     routeName: ROUTER_NAME.GENERAL_DIFF,
     color: "indigo",
   },
+  {
+    name: "cron",
+    icon: "⏰",
+    title: "Cron 表达式",
+    description: "Cron 表达式解析与生成，支持最近运行时间预览",
+    routeName: ROUTER_NAME.GENERAL_CRON,
+    color: "blue",
+  },
 ];
 
 /**
@@ -147,6 +155,14 @@ export const codeTools: Tool[] = [
     description: "文本和图片的 Base64 编码解码，支持 UTF-8 和多种图片格式",
     routeName: ROUTER_NAME.CODE_BASE64,
     color: "purple",
+  },
+  {
+    name: "jwt",
+    icon: "🔐",
+    title: "JWT 解码",
+    description: "JWT Token 解码工具，查看 Header、Payload 及过期时间",
+    routeName: ROUTER_NAME.CODE_JWT,
+    color: "green",
   },
 ];
 
