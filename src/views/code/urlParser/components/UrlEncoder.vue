@@ -162,6 +162,33 @@ import type { MessageType } from "@/composables/useMessage";
 const showMessage =
   inject<(text: string, type?: MessageType) => void>("showMessage")!;
 
+/**
+ * escape() 的兼容实现（escape 已被废弃）
+ * 规则：保留 A-Z a-z 0-9 @ * _ + - . / 其余字符转 %XX 或 %uXXXX
+ */
+function escapePolyfill(str: string): string {
+  return str.replace(/[^A-Za-z0-9@*_+\-.\/]/g, (char) => {
+    const code = char.charCodeAt(0);
+    if (code < 256) {
+      return "%" + code.toString(16).toUpperCase().padStart(2, "0");
+    }
+    return "%u" + code.toString(16).toUpperCase().padStart(4, "0");
+  });
+}
+
+/**
+ * unescape() 的兼容实现（unescape 已被废弃）
+ */
+function unescapePolyfill(str: string): string {
+  return str
+    .replace(/%u([0-9A-Fa-f]{4})/g, (_, hex) =>
+      String.fromCharCode(parseInt(hex, 16))
+    )
+    .replace(/%([0-9A-Fa-f]{2})/g, (_, hex) =>
+      String.fromCharCode(parseInt(hex, 16))
+    );
+};
+
 // 输入输出文本
 const inputText = ref("");
 const outputText = ref("");
@@ -190,7 +217,7 @@ const handleEncode = () => {
         result = encodeURI(inputText.value);
         break;
       case "escape":
-        result = escape(inputText.value);
+        result = escapePolyfill(inputText.value);
         break;
       default:
         result = encodeURIComponent(inputText.value);
@@ -219,7 +246,7 @@ const handleDecode = () => {
         result = decodeURI(inputText.value);
         break;
       case "escape":
-        result = unescape(inputText.value);
+        result = unescapePolyfill(inputText.value);
         break;
       default:
         result = decodeURIComponent(inputText.value);

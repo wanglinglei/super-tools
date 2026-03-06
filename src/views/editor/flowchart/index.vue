@@ -80,13 +80,13 @@
 
     <!-- 画布 -->
     <div class="w-full h-full">
-      <FlowchartCanvas ref="canvasRef" />
+      <FlowchartCanvas ref="canvasRef" @history-change="onHistoryChange" />
     </div>
   </ToolLayout>
 </template>
 
 <script setup lang="ts">
-import { ref, inject } from "vue";
+import { ref, inject, onMounted, onUnmounted } from "vue";
 import ToolLayout from "@/layouts/ToolLayout.vue";
 import ToolButton from "@/components/ToolButton/ToolButton.vue";
 import FlowchartCanvas from "./components/FlowchartCanvas.vue";
@@ -106,11 +106,9 @@ const fileInputRef = ref<HTMLInputElement | null>(null);
 // 历史记录状态
 const historyStatus = ref({ canUndo: false, canRedo: false });
 
-// 监听历史记录状态变化
-const updateHistoryStatus = () => {
-  if (canvasRef.value) {
-    historyStatus.value = canvasRef.value.getHistoryStatus();
-  }
+// 接收来自 FlowchartCanvas 的历史记录状态变更事件
+const onHistoryChange = (status: { canUndo: boolean; canRedo: boolean }) => {
+  historyStatus.value = status;
 };
 
 // 监听键盘事件
@@ -128,18 +126,12 @@ const onKeyDown = (e: KeyboardEvent) => {
   }
 };
 
-// 在组件挂载后添加事件监听
-import { onMounted, onUnmounted } from "vue";
-
 onMounted(() => {
   document.addEventListener("keydown", onKeyDown);
-  // 定期检查历史记录状态（因为 canvas 内部状态变化不会自动触发父组件更新）
-  // 更好的做法是在 canvas 组件 emit 事件，这里简化处理
-  const timer = setInterval(updateHistoryStatus, 100);
-  onUnmounted(() => {
-    clearInterval(timer);
-    document.removeEventListener("keydown", onKeyDown);
-  });
+});
+
+onUnmounted(() => {
+  document.removeEventListener("keydown", onKeyDown);
 });
 
 /**
@@ -147,7 +139,6 @@ onMounted(() => {
  */
 function handleUndo() {
   canvasRef.value?.undo();
-  updateHistoryStatus();
 }
 
 /**
@@ -155,7 +146,6 @@ function handleUndo() {
  */
 function handleRedo() {
   canvasRef.value?.redo();
-  updateHistoryStatus();
 }
 
 /**
@@ -163,7 +153,6 @@ function handleRedo() {
  */
 function addNode(type: NodeType) {
   canvasRef.value?.addNode(type);
-  updateHistoryStatus();
 }
 
 /**
@@ -205,7 +194,6 @@ function onFileSelected(event: Event) {
       const json = JSON.parse(e.target?.result as string);
       canvasRef.value?.importJson(json);
       showMessage("打开成功", "success");
-      updateHistoryStatus();
     } catch (error) {
       showMessage("文件格式错误", "error");
     }
@@ -262,7 +250,6 @@ async function handleExportPng() {
 function handleClear() {
   canvasRef.value?.clearAll();
   showMessage("画布已清空");
-  updateHistoryStatus();
 }
 
 /**
@@ -271,7 +258,6 @@ function handleClear() {
 function handleReset() {
   canvasRef.value?.reset();
   showMessage("已重置为示例");
-  updateHistoryStatus();
 }
 </script>
 

@@ -315,6 +315,10 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted, nextTick, watch } from "vue";
+
+const emit = defineEmits<{
+  historyChange: [status: { canUndo: boolean; canRedo: boolean }];
+}>();
 import type {
   FlowNode,
   FlowConnection,
@@ -376,6 +380,11 @@ function recordState() {
   } else {
     historyIndex.value++;
   }
+
+  emit("historyChange", {
+    canUndo: historyIndex.value > 0,
+    canRedo: historyIndex.value < history.value.length - 1,
+  });
 }
 
 /**
@@ -389,6 +398,10 @@ function undo() {
     connections.value = JSON.parse(JSON.stringify(state?.connections));
     selectedNodeId.value = null;
     selectedConnectionId.value = null;
+    emit("historyChange", {
+      canUndo: historyIndex.value > 0,
+      canRedo: historyIndex.value < history.value.length - 1,
+    });
   }
 }
 
@@ -403,6 +416,10 @@ function redo() {
     connections.value = JSON.parse(JSON.stringify(state?.connections));
     selectedNodeId.value = null;
     selectedConnectionId.value = null;
+    emit("historyChange", {
+      canUndo: historyIndex.value > 0,
+      canRedo: historyIndex.value < history.value.length - 1,
+    });
   }
 }
 
