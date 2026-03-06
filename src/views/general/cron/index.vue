@@ -9,7 +9,22 @@
       <div class="card-p flex-shrink-0">
         <div class="flex justify-between items-center mb-2">
           <h2 class="text-title">Cron 表达式</h2>
-          <span class="text-xs text-gray-500">支持 5 或 6 位 (秒 分 时 日 月 周)</span>
+          <div class="flex items-center gap-2">
+            <select
+              class="text-xs border border-gray-300 rounded px-2 py-1 bg-white focus:outline-none focus:ring-1 focus:ring-blue-500"
+              @change="applyPreset"
+            >
+              <option value="" disabled selected>常用预设...</option>
+              <option
+                v-for="preset in presets"
+                :key="preset.value"
+                :value="preset.value"
+              >
+                {{ preset.label }}
+              </option>
+            </select>
+            <span class="text-xs text-gray-500">支持 5 或 6 位</span>
+          </div>
         </div>
         <div class="flex gap-2">
           <input
@@ -21,6 +36,12 @@
           />
           <button class="btn-primary px-4" @click="parseCron">解析</button>
         </div>
+        
+        <!-- 自然语言描述 -->
+        <div class="mt-2" v-if="cronDescription">
+          <span class="text-sm font-medium text-green-600">含义: {{ cronDescription }}</span>
+        </div>
+
         <div class="mt-2 text-sm text-gray-600" v-if="nextRunTimes.length > 0">
           下次运行: <span class="font-mono font-bold text-blue-600">{{ nextRunTimes[0] }}</span>
         </div>
@@ -56,24 +77,49 @@ import ToolButton from "@/components/ToolButton/ToolButton.vue";
 import CronGenerator from "./components/CronGenerator.vue";
 import NextRunTimes from "./components/NextRunTimes.vue";
 import cronParser from "cron-parser";
+import cronstrue from "cronstrue/i18n";
 
 const cronExpression = ref("* * * * *");
 const nextRunTimes = ref<string[]>([]);
+const cronDescription = ref("");
 const error = ref("");
+
+const presets = [
+  { label: "每分钟", value: "* * * * *" },
+  { label: "每小时", value: "0 * * * *" },
+  { label: "每天 0 点", value: "0 0 * * *" },
+  { label: "每周一 0 点", value: "0 0 * * 1" },
+  { label: "每月 1 号 0 点", value: "0 0 1 * *" },
+  { label: "每年 1 月 1 号 0 点", value: "0 0 1 1 *" },
+  { label: "工作日早9点到晚6点", value: "0 9-18 * * 1-5" },
+];
 
 function parseCron() {
   error.value = "";
   nextRunTimes.value = [];
+  cronDescription.value = "";
   
   if (!cronExpression.value.trim()) return;
 
   try {
+    // 1. 解析下次运行时间
     const interval = (cronParser as any).parseExpression(cronExpression.value);
     const times = [];
     for (let i = 0; i < 10; i++) {
       times.push(interval.next().toString());
     }
     nextRunTimes.value = times;
+
+    // 2. 生成自然语言描述
+    try {
+      cronDescription.value = cronstrue.toString(cronExpression.value, {
+        locale: "zh_CN",
+        use24HourTimeFormat: true,
+      });
+    } catch (e) {
+      // cronstrue 可能不支持某些复杂的 6 位表达式，忽略错误
+    }
+
   } catch (err) {
     error.value = "无效的 Cron 表达式: " + (err as Error).message;
   }
@@ -83,9 +129,20 @@ function handleInput() {
   parseCron();
 }
 
+function applyPreset(e: Event) {
+  const select = e.target as HTMLSelectElement;
+  if (select.value) {
+    cronExpression.value = select.value;
+    parseCron();
+    // 重置 select 选中项，以便下次可以选择同一个
+    select.value = "";
+  }
+}
+
 function clearAll() {
   cronExpression.value = "";
   nextRunTimes.value = [];
+  cronDescription.value = "";
   error.value = "";
 }
 
