@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 import type { RouteLocationNormalized } from "vue-router";
 import { ROUTER_NAME } from "./constants";
-import { mapRoutes, editorRoutes, generalRoutes, codeRoutes } from "./modules";
+import { mapRoutes, editorRoutes, generalRoutes, codeRoutes, reporterRoutes } from "./modules";
 
 // 扩展路由 meta 类型
 declare module "vue-router" {
@@ -34,6 +34,7 @@ const router = createRouter({
     editorRoutes,
     generalRoutes,
     codeRoutes,
+    reporterRoutes,
 
     // 404 页面
     {

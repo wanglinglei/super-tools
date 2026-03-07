@@ -6,3 +6,4 @@ export { default as mapRoutes } from "./map";
 export { default as editorRoutes } from "./editor";
 export { default as generalRoutes } from "./general";
 export { default as codeRoutes } from "./code";
+export { default as reporterRoutes } from "./reporter";

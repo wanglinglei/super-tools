@@ -28,9 +28,10 @@ export default defineConfig({
       "Access-Control-Allow-Headers": "Content-Type, Authorization",
     },
     proxy: {
-      "http://localhost:3000": {
-        target: "http://localhost:3000",
+      "/reporter-api": {
+        target: "http://localhost:3001",
         changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/reporter-api/, "/api"),
       },
     },
   },

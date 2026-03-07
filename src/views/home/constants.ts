@@ -167,6 +167,20 @@ export const codeTools: Tool[] = [
 ];
 
 /**
+ * AI / 数据工具列表
+ */
+export const aiTools: Tool[] = [
+  {
+    name: "reporter",
+    icon: "📊",
+    title: "对话分析报告",
+    description: "查看 Cursor 插件上报的对话分析记录，支持搜索、筛选和分页浏览",
+    routeName: ROUTER_NAME.REPORTER_LIST,
+    color: "purple",
+  },
+];
+
+/**
  * 即将推出的工具列表
  */
 export const comingTools: ComingTool[] = [
@@ -223,6 +237,13 @@ export interface ToolSection {
  * 用于在首页通过 v-for 渲染各个工具分类
  */
 export const toolSections: ToolSection[] = [
+  {
+    id: "ai",
+    title: "🤖 AI 数据",
+    accentColor: "purple",
+    cardType: "tool",
+    tools: aiTools,
+  },
   {
     id: "editor",
     title: "📝 编辑器工具",
