@@ -199,7 +199,7 @@ const lastReported = computed(() => {
 
 // ── 请求 ────────────────────────────────────────────────────────────────────────
 
-const BASE = import.meta.env.DEV ? "/reporter-api" : "/api";
+const BASE = (import.meta.env.VITE_REPORTER_API as string) || "/reporter-api";
 
 async function fetchList() {
   const { page, pageSize, keyword, workspaceSlug } = filter.value;
