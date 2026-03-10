@@ -105,21 +105,24 @@ function parseCron() {
     // 1. 解析下次运行时间
     // 兼容处理 ESM/CommonJS 导入
     const parser = (cronParser as any).default || cronParser;
-    const parseFn = parser.parseExpression || parser; // 某些版本直接导出函数
     
-    if (typeof parseFn !== 'function') {
-        throw new Error('cron-parser library not loaded correctly');
-    }
-
     let interval;
-    try {
-      interval = parseFn(cronExpression.value);
-    } catch (e: any) {
-      // 如果报错需要 new，尝试 new 调用
-      if (e.message && e.message.includes("Class constructor")) {
-        interval = new parseFn(cronExpression.value);
-      } else {
-        throw e;
+    if (typeof parser.parse === 'function') {
+      // cron-parser 5.x: 使用静态方法 parse
+      interval = parser.parse(cronExpression.value);
+    } else if (typeof parser.parseExpression === 'function') {
+      // 旧版本或兼容层
+      interval = parser.parseExpression(cronExpression.value);
+    } else {
+      // 尝试直接调用或 new
+      try {
+        interval = parser(cronExpression.value);
+      } catch (e: any) {
+        if (e.message && e.message.includes("Class constructor")) {
+          interval = new parser(cronExpression.value);
+        } else {
+          throw e;
+        }
       }
     }
 
