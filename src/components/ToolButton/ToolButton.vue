@@ -9,6 +9,8 @@ import SvgIcon from "@/components/svgIcon/SvgIcon.vue";
 interface Props {
   /** 按钮类型 */
   type?: "default" | "primary" | "danger" | "icon";
+  /** 尺寸 */
+  size?: "sm" | "md" | "lg";
   /** 图标名称（使用 SvgIcon） */
   icon?: string;
   /** 按钮文本 */
@@ -21,6 +23,7 @@ interface Props {
 
 withDefaults(defineProps<Props>(), {
   type: "default",
+  size: "md",
   icon: "",
   text: "",
   disabled: false,
@@ -35,7 +38,11 @@ defineEmits<{
 <template>
   <button
     class="tool-btn"
-    :class="[`tool-btn--${type}`, { 'tool-btn--disabled': disabled }]"
+    :class="[
+      `tool-btn--${type}`,
+      `tool-btn--${size}`,
+      { 'tool-btn--disabled': disabled }
+    ]"
     :disabled="disabled"
     :title="title"
     @click="$emit('click', $event)"
@@ -43,7 +50,7 @@ defineEmits<{
     <SvgIcon
       v-if="icon"
       :name="icon"
-      size="16px"
+      :size="size === 'sm' ? '14px' : size === 'lg' ? '20px' : '16px'"
       :class-name="text ? 'mr-1.5' : ''"
     />
     <span v-if="text">{{ text }}</span>
@@ -53,33 +60,46 @@ defineEmits<{
 
 <style scoped>
 .tool-btn {
-  @apply flex items-center justify-center rounded-md text-sm font-medium transition-all cursor-pointer;
+  @apply flex items-center justify-center rounded-md font-medium transition-all cursor-pointer;
+}
+
+/* 尺寸样式 */
+.tool-btn--sm {
+  @apply px-2 py-1.5 text-xs;
+}
+
+.tool-btn--md {
+  @apply px-3 py-2 text-sm;
+}
+
+.tool-btn--lg {
+  @apply px-4 py-2.5 text-base;
 }
 
 /* 默认样式 */
 .tool-btn--default {
-  @apply px-3 py-2 bg-white border border-gray-300 text-gray-700;
+  @apply bg-white border border-gray-300 text-gray-700;
   @apply hover:bg-gray-50 hover:border-gray-400;
   @apply active:bg-gray-100;
 }
 
 /* 主要按钮 */
 .tool-btn--primary {
-  @apply px-3 py-2 bg-blue-500 border border-blue-500 text-white;
+  @apply bg-blue-500 border border-blue-500 text-white;
   @apply hover:bg-blue-600 hover:border-blue-600;
   @apply active:bg-blue-700;
 }
 
 /* 危险按钮 */
 .tool-btn--danger {
-  @apply px-3 py-2 bg-red-500 border border-red-500 text-white;
+  @apply bg-red-500 border border-red-500 text-white;
   @apply hover:bg-red-600 hover:border-red-600;
   @apply active:bg-red-700;
 }
 
 /* 图标按钮 */
 .tool-btn--icon {
-  @apply w-10 h-10 bg-white border border-gray-300 text-gray-600;
+  @apply w-10 h-10 bg-white border border-gray-300 text-gray-600 p-0;
   @apply hover:bg-gray-50 hover:border-gray-400 hover:text-gray-800;
   @apply active:bg-gray-100;
 }

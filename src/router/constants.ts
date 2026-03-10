@@ -15,5 +15,5 @@ export const ROUTER_NAME = {
   GENERAL_DIFF: "general-diff",
   GENERAL_CRON: "general-cron",
   EDITOR_FLOWCHART: "editor-flowchart",
-  REPORTER_LIST: "reporter-list",
+  IMAGE_CROP: "image-crop",
 };

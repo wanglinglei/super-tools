@@ -26,6 +26,9 @@ importers:
       cronstrue:
         specifier: ^3.13.0
         version: 3.13.0
+      cropperjs:
+        specifier: 1.6.2
+        version: 1.6.2
       diff:
         specifier: ^8.0.3
         version: 8.0.3
@@ -717,6 +720,9 @@ packages:
   cronstrue@3.13.0:
     resolution: {integrity: sha512-M06cKwRIN46AyuM8BOmF1HUkBTkd3/h7uYImnrH1T3wtRKBGOibVo3jZ42VheEvx8LtgZbG/4GI35vfIxYxMug==}
     hasBin: true
+
+  cropperjs@1.6.2:
+    resolution: {integrity: sha512-nhymn9GdnV3CqiEHJVai54TULFAE3VshJTXSqSJKa8yXAKyBKDWdhHarnlIPrshJ0WMFTGuFvG02YjLXfPiuOA==}
 
   css-tree@3.1.0:
     resolution: {integrity: sha512-0eW44TGN5SQXU1mWSkKwFstI/22X2bG1nYzZTYMAWjylYURhse752YgbE4Cx46AC+bAvI+/dYTPRk1LqSUnu6w==}
@@ -2222,6 +2228,8 @@ snapshots:
       luxon: 3.7.2
 
   cronstrue@3.13.0: {}
+
+  cropperjs@1.6.2: {}
 
   css-tree@3.1.0:
     dependencies:

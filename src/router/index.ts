@@ -1,7 +1,13 @@
 import { createRouter, createWebHistory } from "vue-router";
 import type { RouteLocationNormalized } from "vue-router";
 import { ROUTER_NAME } from "./constants";
-import { mapRoutes, editorRoutes, generalRoutes, codeRoutes, reporterRoutes } from "./modules";
+import {
+  mapRoutes,
+  editorRoutes,
+  generalRoutes,
+  codeRoutes,
+  imageRoutes,
+} from "./modules";
 
 // 扩展路由 meta 类型
 declare module "vue-router" {
@@ -34,7 +40,7 @@ const router = createRouter({
     editorRoutes,
     generalRoutes,
     codeRoutes,
-    reporterRoutes,
+    imageRoutes,
 
     // 404 页面
     {
@@ -78,7 +84,7 @@ router.beforeEach(
     }
 
     next();
-  }
+  },
 );
 
 /**
@@ -92,10 +98,10 @@ router.afterEach(
     // 开发环境输出路由切换信息
     if (import.meta.env.DEV && routeTime > 0) {
       console.debug(
-        `🚀 路由切换: ${from.path} → ${to.path} (${routeTime.toFixed(2)}ms)`
+        `🚀 路由切换: ${from.path} → ${to.path} (${routeTime.toFixed(2)}ms)`,
       );
     }
-  }
+  },
 );
 
 /**

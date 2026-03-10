@@ -186,6 +186,92 @@ const icons: Record<string, any> = {
       ];
     },
   }),
+
+  // 放大
+  "zoom-in": defineComponent({
+    setup() {
+      return () => [
+        h("circle", { cx: "11", cy: "11", r: "8" }),
+        h("line", { x1: "21", y1: "21", x2: "16.65", y2: "16.65" }),
+        h("line", { x1: "11", y1: "8", x2: "11", y2: "14" }),
+        h("line", { x1: "8", y1: "11", x2: "14", y2: "11" }),
+      ];
+    },
+  }),
+
+  // 缩小
+  "zoom-out": defineComponent({
+    setup() {
+      return () => [
+        h("circle", { cx: "11", cy: "11", r: "8" }),
+        h("line", { x1: "21", y1: "21", x2: "16.65", y2: "16.65" }),
+        h("line", { x1: "8", y1: "11", x2: "14", y2: "11" }),
+      ];
+    },
+  }),
+
+  // 左旋 (逆时针)
+  "rotate-ccw": defineComponent({
+    setup() {
+      return () => [
+        h("path", { d: "M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" }),
+        h("path", { d: "M3 3v5h5" }),
+      ];
+    },
+  }),
+
+  // 右旋 (顺时针)
+  "rotate-cw": defineComponent({
+    setup() {
+      return () => [
+        h("path", { d: "M21 12a9 9 0 1 1-9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" }),
+        h("path", { d: "M21 3v5h-5" }),
+      ];
+    },
+  }),
+
+  // 水平翻转 (arrows-h -> move-horizontal 替代)
+  "arrows-h": defineComponent({
+    setup() {
+      return () => [
+        h("polyline", { points: "18 8 22 12 18 16" }),
+        h("polyline", { points: "6 8 2 12 6 16" }),
+        h("line", { x1: "2", y1: "12", x2: "22", y2: "12" }),
+      ];
+    },
+  }),
+
+  // 垂直翻转 (arrows-v -> move-vertical 替代)
+  "arrows-v": defineComponent({
+    setup() {
+      return () => [
+        h("polyline", { points: "8 18 12 22 16 18" }),
+        h("polyline", { points: "8 6 12 2 16 6" }),
+        h("line", { x1: "12", y1: "2", x2: "12", y2: "22" }),
+      ];
+    },
+  }),
+
+  // 重置/刷新
+  refresh: defineComponent({
+    setup() {
+      return () => [
+        h("path", { d: "M23 4v6h-6" }),
+        h("path", { d: "M1 20v-6h6" }),
+        h("path", { d: "M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" }),
+      ];
+    },
+  }),
+
+  // 裁剪
+  crop: defineComponent({
+    setup() {
+      return () => [
+        h("path", { d: "M6.13 1L6 16a2 2 0 0 0 2 2h15" }),
+        h("path", { d: "M1 6.13L16 6a2 2 0 0 1 2 2v15" }),
+      ];
+    },
+  }),
 };
 
 const iconComponent = computed(() => {
