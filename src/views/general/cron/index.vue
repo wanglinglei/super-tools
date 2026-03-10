@@ -105,7 +105,13 @@ function parseCron() {
     // 1. 解析下次运行时间
     // 兼容处理 ESM/CommonJS 导入
     const parser = (cronParser as any).default || cronParser;
-    const interval = parser.parseExpression(cronExpression.value);
+    const parseFn = parser.parseExpression || parser; // 某些版本直接导出函数
+    
+    if (typeof parseFn !== 'function') {
+        throw new Error('cron-parser library not loaded correctly');
+    }
+
+    const interval = parseFn(cronExpression.value);
     const times = [];
     for (let i = 0; i < 10; i++) {
       times.push(interval.next().toString());
