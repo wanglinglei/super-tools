@@ -128,7 +128,18 @@ function parseCron() {
 
     const times = [];
     for (let i = 0; i < 10; i++) {
-      times.push(interval.next().toString());
+      const next = interval.next();
+      const date = next.toDate ? next.toDate() : new Date(next.toString());
+      times.push(date.toLocaleString('zh-CN', { 
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        weekday: 'long',
+        hour12: false 
+      }));
     }
     nextRunTimes.value = times;
 
