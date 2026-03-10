@@ -111,7 +111,18 @@ function parseCron() {
         throw new Error('cron-parser library not loaded correctly');
     }
 
-    const interval = parseFn(cronExpression.value);
+    let interval;
+    try {
+      interval = parseFn(cronExpression.value);
+    } catch (e: any) {
+      // 如果报错需要 new，尝试 new 调用
+      if (e.message && e.message.includes("Class constructor")) {
+        interval = new parseFn(cronExpression.value);
+      } else {
+        throw e;
+      }
+    }
+
     const times = [];
     for (let i = 0; i < 10; i++) {
       times.push(interval.next().toString());
