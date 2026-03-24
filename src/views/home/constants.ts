@@ -140,6 +140,22 @@ export const generalTools: Tool[] = [
     routeName: ROUTER_NAME.GENERAL_CRON,
     color: "blue",
   },
+  {
+    name: "geojson2svg",
+    icon: "🗺️",
+    title: "GeoJSON 转 SVG",
+    description: "将 GeoJSON 要素转换为 SVG 矢量图，支持样式配置与下载",
+    routeName: ROUTER_NAME.GENERAL_GEOJSON2SVG,
+    color: "indigo",
+  },
+  {
+    name: "coordinate",
+    icon: "📍",
+    title: "坐标系转换",
+    description: "支持 WGS84、GCJ-02、BD-09 三种坐标系互相转换",
+    routeName: ROUTER_NAME.GENERAL_COORDINATE,
+    color: "blue",
+  },
 ];
 
 /**

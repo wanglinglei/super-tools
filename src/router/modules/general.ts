@@ -57,6 +57,22 @@ const generalRoutes: RouteRecordRaw = {
         title: "Cron 表达式",
       },
     },
+    {
+      path: "geojson2svg",
+      name: ROUTER_NAME.GENERAL_GEOJSON2SVG,
+      component: () => import("@/views/general/geojson2svg/index.vue"),
+      meta: {
+        title: "GeoJSON 转 SVG",
+      },
+    },
+    {
+      path: "coordinate",
+      name: ROUTER_NAME.GENERAL_COORDINATE,
+      component: () => import("@/views/general/coordinate/index.vue"),
+      meta: {
+        title: "坐标系转换",
+      },
+    },
   ],
 };
 

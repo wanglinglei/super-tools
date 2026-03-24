@@ -14,6 +14,8 @@ export const ROUTER_NAME = {
   CODE_JWT: "code-jwt",
   GENERAL_DIFF: "general-diff",
   GENERAL_CRON: "general-cron",
+  GENERAL_GEOJSON2SVG: "general-geojson2svg",
+  GENERAL_COORDINATE: "general-coordinate",
   EDITOR_FLOWCHART: "editor-flowchart",
   IMAGE_CROP: "image-crop",
 };
