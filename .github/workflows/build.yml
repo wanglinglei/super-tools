@@ -35,3 +35,4 @@ jobs:
           REMOTE_USER: ${{ secrets.SERVER_USERNAME }}
           SOURCE: 'dist/'
           TARGET: '/opt/1panel/apps/openresty/openresty/www/sites/tools/index'
+          ARGS: "-rlgoDzvc -i --delete --exclude=404.html"
