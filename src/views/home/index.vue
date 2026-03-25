@@ -143,20 +143,30 @@ onBeforeUnmount(() => {
   max-width: 1280px;
 }
 
+/* 默认隐藏，避免移动端占位 */
+.catalog-aside {
+  display: none;
+}
+
 @media (min-width: 1024px) {
   .catalog-aside {
-    display: none;
+    display: block;
+    position: sticky;
+    top: 1rem;
+    width: 14rem;
+    z-index: 10;
+    margin-bottom: 1.5rem;
   }
 }
 
 @media (min-width: 1800px) {
   .catalog-aside {
-    display: block;
     position: fixed;
     top: 2rem;
     left: max(8px, calc((100vw - 1280px) / 2 - 14rem - 16px));
     width: 14rem;
     z-index: 10;
+    margin-bottom: 0;
   }
 }
 </style>
