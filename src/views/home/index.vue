@@ -12,7 +12,7 @@
       <!-- 左侧目录 + 右侧工具内容 -->
       <div class="relative">
         <!-- 左侧一级目录锚点 -->
-        <aside class="catalog-aside hidden lg:block">
+        <aside class="catalog-aside">
           <div class="bg-white/70 backdrop-blur-sm border border-white/60 rounded-2xl p-4 shadow-sm">
             <h2 class="text-sm font-semibold text-gray-700 mb-3 tracking-wide">工具目录</h2>
             <nav class="space-y-1">
@@ -145,6 +145,13 @@ onBeforeUnmount(() => {
 
 @media (min-width: 1024px) {
   .catalog-aside {
+    display: none;
+  }
+}
+
+@media (min-width: 1800px) {
+  .catalog-aside {
+    display: block;
     position: fixed;
     top: 2rem;
     left: max(8px, calc((100vw - 1280px) / 2 - 14rem - 16px));
