@@ -10,7 +10,7 @@
     </div>
 
     <!-- 工具卡片网格 -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div class="tool-grid grid gap-6">
       <slot></slot>
     </div>
   </section>
@@ -46,5 +46,13 @@ const accentColorClass = computed(() => {
 </script>
 
 <style scoped>
-/* 可以在这里添加额外的样式 */
+.tool-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+@media (min-width: 1651px) {
+  .tool-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
 </style>

@@ -254,6 +254,13 @@ export interface ToolSection {
  */
 export const toolSections: ToolSection[] = [
   {
+    id: "general",
+    title: "🔧 通用工具",
+    accentColor: "yellow",
+    cardType: "tool",
+    tools: generalTools,
+  },
+  {
     id: "editor",
     title: "📝 编辑器工具",
     accentColor: "blue",
@@ -281,13 +288,7 @@ export const toolSections: ToolSection[] = [
     cardType: "tool",
     tools: codeTools,
   },
-  {
-    id: "general",
-    title: "🔧 通用工具",
-    accentColor: "yellow",
-    cardType: "tool",
-    tools: generalTools,
-  },
+
   {
     id: "coming",
     title: "🚀 更多工具",

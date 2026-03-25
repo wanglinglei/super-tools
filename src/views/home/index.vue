@@ -1,5 +1,7 @@
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+  <div
+    class="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50"
+  >
     <!-- 页面头部 -->
     <div class="container mx-auto px-4 py-12">
       <div class="text-center mb-12">
@@ -10,11 +12,15 @@
       </div>
 
       <!-- 左侧目录 + 右侧工具内容 -->
-      <div class="relative">
+      <div class="content-layout">
         <!-- 左侧一级目录锚点 -->
         <aside class="catalog-aside">
-          <div class="bg-white/70 backdrop-blur-sm border border-white/60 rounded-2xl p-4 shadow-sm">
-            <h2 class="text-sm font-semibold text-gray-700 mb-3 tracking-wide">工具目录</h2>
+          <div
+            class="bg-white/70 backdrop-blur-sm border border-white/60 rounded-2xl p-4 shadow-sm"
+          >
+            <h2 class="text-sm font-semibold text-gray-700 mb-3 tracking-wide">
+              工具目录
+            </h2>
             <nav class="space-y-1">
               <a
                 v-for="section in toolSections"
@@ -35,7 +41,7 @@
         </aside>
 
         <!-- 工具分类 -->
-        <div class="space-y-12">
+        <div class="content-main space-y-12">
           <div
             v-for="section in toolSections"
             :key="section.id"
@@ -60,7 +66,11 @@
               </template>
 
               <!-- 敬请期待卡片 -->
-              <template v-else-if="section.cardType === 'coming' && section.tools.length > 0">
+              <template
+                v-else-if="
+                  section.cardType === 'coming' && section.tools.length > 0
+                "
+              >
                 <ComingSoonCard
                   v-for="tool in section.tools"
                   :key="tool.name"
@@ -72,7 +82,6 @@
             </ToolSection>
           </div>
         </div>
-
       </div>
 
       <!-- 页脚信息 -->
@@ -112,7 +121,9 @@ onMounted(() => {
       }
 
       const sectionId = visibleSection.target.id.replace("section-", "");
-      const matchedSection = toolSections.find((section) => String(section.id) === sectionId);
+      const matchedSection = toolSections.find(
+        (section) => String(section.id) === sectionId,
+      );
 
       if (matchedSection) {
         activeSection.value = matchedSection.id;
@@ -121,7 +132,7 @@ onMounted(() => {
     {
       rootMargin: "-20% 0px -60% 0px",
       threshold: [0.1, 0.3, 0.5],
-    }
+    },
   );
 
   toolSections.forEach((section) => {
@@ -143,30 +154,28 @@ onBeforeUnmount(() => {
   max-width: 1280px;
 }
 
-/* 默认隐藏，避免移动端占位 */
 .catalog-aside {
-  display: none;
+  position: fixed;
+  top: 2rem;
+  left: 12px;
+  width: 11rem;
+  z-index: 20;
 }
 
-@media (min-width: 1024px) {
-  .catalog-aside {
-    display: block;
-    position: sticky;
-    top: 1rem;
-    width: 14rem;
-    z-index: 10;
-    margin-bottom: 1.5rem;
-  }
+.content-layout {
+  position: relative;
 }
 
-@media (min-width: 1800px) {
-  .catalog-aside {
-    position: fixed;
-    top: 2rem;
-    left: max(8px, calc((100vw - 1280px) / 2 - 14rem - 16px));
-    width: 14rem;
-    z-index: 10;
-    margin-bottom: 0;
+.content-main {
+  width: 100%;
+  max-width: 1060px;
+  margin: 0 auto;
+  min-width: 0;
+}
+
+@media (min-width: 1651px) {
+  .content-main {
+    max-width: 1600px;
   }
 }
 </style>
