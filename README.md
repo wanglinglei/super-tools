@@ -1,6 +1,7 @@
 # Super Tools - 超级工具集
 
-> 一个基于 Vue 3 + TypeScript 的在线工具集合，提供编辑器、地图、编码、通用工具等 13+ 实用功能。
+> 一个基于 Vue 3 + TypeScript 的在线工具集合，提供编辑器、地图、编码、通用工具等 17+ 实用功能。  
+> 在线访问：[https://easyai.xin/tools/](https://easyai.xin/tools/)
 
 ## 🛠️ 技术栈
 
@@ -84,7 +85,8 @@ super-tools/
 │   │   │
 │   │   ├── editor/             # 编辑器工具
 │   │   │   ├── json/           # JSON 编辑器
-│   │   │   └── markdown/       # Markdown 编辑器
+│   │   │   ├── markdown/       # Markdown 编辑器
+│   │   │   └── flowchart/      # 流程图编辑器
 │   │   │
 │   │   ├── map/                # 地图工具
 │   │   │   ├── common/         # 地图公共模块
@@ -99,11 +101,13 @@ super-tools/
 │   │   │   │   │   └── UrlParamsEditor.vue
 │   │   │   │   ├── constants.ts
 │   │   │   │   └── index.vue
-│   │   │   └── base64/         # Base64 编解码
-│   │   │       ├── components/
-│   │   │       │   ├── TextBase64.vue
-│   │   │       │   └── ImageBase64.vue
-│   │   │       ├── constants.ts
+│   │   │   ├── base64/         # Base64 编解码
+│   │   │   │   ├── components/
+│   │   │   │   │   ├── TextBase64.vue
+│   │   │   │   │   └── ImageBase64.vue
+│   │   │   │   ├── constants.ts
+│   │   │   │   └── index.vue
+│   │   │   └── jwt/            # JWT 解码
 │   │   │       └── index.vue
 │   │   │
 │   │   ├── general/            # 通用工具
@@ -122,8 +126,14 @@ super-tools/
 │   │   │   │   ├── constants.ts
 │   │   │   │   ├── transform.ts
 │   │   │   │   └── index.vue
-│   │   │   └── diff/           # 文本 Diff
-│   │   │       ├── constants.ts
+│   │   │   ├── diff/           # 文本 Diff
+│   │   │   │   ├── constants.ts
+│   │   │   │   └── index.vue
+│   │   │   ├── cron/           # Cron 表达式
+│   │   │   │   └── index.vue
+│   │   │   ├── geojson2svg/    # GeoJSON 转 SVG
+│   │   │   │   └── index.vue
+│   │   │   └── coordinate/     # 坐标系转换
 │   │   │       └── index.vue
 │   │   │
 │   │   └── error/              # 错误页面
@@ -143,6 +153,10 @@ super-tools/
 ```
 
 ## 🚀 快速开始
+
+### 在线访问
+
+访问地址：`https://easyai.xin/tools/`
 
 ### 环境要求
 
@@ -205,6 +219,7 @@ VITE_AMAP_SECURITY_JS_CODE=your_security_code
 | --------------- | ---- | ------------------------ |
 | JSON 编辑器     | { }  | `/tools/editor/json`     |
 | Markdown 编辑器 | M↓   | `/tools/editor/markdown` |
+| 流程图编辑器    | 🧊   | `/tools/editor/flowchart` |
 
 ### 🗺️ 地图工具
 
@@ -220,6 +235,7 @@ VITE_AMAP_SECURITY_JS_CODE=your_security_code
 | 正则测试      | 🔍   | `/tools/code/regex`      | 正则表达式测试与匹配                       |
 | URL 编解码    | 🔗   | `/tools/code/url-parser` | URL 编码/解码 + Query 参数键值对可视化编辑 |
 | Base64 编解码 | 🔐   | `/tools/code/base64`     | 文本/图片 Base64 互转，支持拖拽上传        |
+| JWT 解码      | 🪪   | `/tools/code/jwt`        | JWT Header/Payload 在线解析，便于调试鉴权  |
 
 ### 🔧 通用工具
 
@@ -230,6 +246,36 @@ VITE_AMAP_SECURITY_JS_CODE=your_security_code
 | Excel 转 JSON | 📊   | `/tools/general/excel2json` | Excel 文件解析为 JSON                      |
 | 颜色转换      | 🎨   | `/tools/general/color`      | HEX/RGB/HSL/HSV 互转、取色器、渐变色生成器 |
 | 文本 Diff     | 📄   | `/tools/general/diff`       | 文本差异对比，支持统一/并排视图            |
+| Cron 表达式   | ⏱️   | `/tools/general/cron`       | Cron 可视化配置与表达式生成功能            |
+| GeoJSON 转 SVG | 🗺️  | `/tools/general/geojson2svg` | 将 GeoJSON 数据快速转换为 SVG 图形         |
+| 坐标系转换    | 📐   | `/tools/general/coordinate` | WGS84/GCJ02/BD09 等坐标系互转              |
+
+## 🆕 新增工具介绍
+
+### 流程图编辑器（`/tools/editor/flowchart`）
+
+- 面向快速绘制流程图场景，支持在线编辑与实时预览。
+- 适合需求梳理、逻辑表达和方案评审时快速产出图示内容。
+
+### JWT 解码（`/tools/code/jwt`）
+
+- 输入 JWT 字符串后可直接解析 Header 与 Payload。
+- 便于前后端联调时检查 token 结构与字段内容。
+
+### Cron 表达式（`/tools/general/cron`）
+
+- 通过可视化方式生成 Cron 表达式，降低手写规则成本。
+- 适合定时任务配置、表达式学习和快速验证场景。
+
+### GeoJSON 转 SVG（`/tools/general/geojson2svg`）
+
+- 将标准 GeoJSON 要素转为 SVG，便于前端展示和二次加工。
+- 适用于地图轮廓、区域可视化等轻量图形输出需求。
+
+### 坐标系转换（`/tools/general/coordinate`）
+
+- 支持常见地理坐标系之间互转，方便地图数据对齐。
+- 可用于 GIS 数据预处理、坐标纠偏与接口对接调试。
 
 ## 🎨 组件系统
 

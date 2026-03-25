@@ -320,6 +320,40 @@ function getMapExtent(geojson: RawGeoJSON) {
   };
 }
 
+function normalizeExtentToViewport(
+  extent: { left: number; bottom: number; right: number; top: number },
+  viewportWidth: number,
+  viewportHeight: number
+) {
+  const width = Math.max(extent.right - extent.left, 1e-6);
+  const height = Math.max(extent.top - extent.bottom, 1e-6);
+  const viewportAspect = Math.max(viewportWidth, 1) / Math.max(viewportHeight, 1);
+  const extentAspect = width / height;
+
+  const centerX = (extent.left + extent.right) / 2;
+  const centerY = (extent.bottom + extent.top) / 2;
+
+  if (extentAspect > viewportAspect) {
+    const targetHeight = width / viewportAspect;
+    const halfHeight = targetHeight / 2;
+    return {
+      left: extent.left,
+      right: extent.right,
+      bottom: centerY - halfHeight,
+      top: centerY + halfHeight,
+    };
+  }
+
+  const targetWidth = height * viewportAspect;
+  const halfWidth = targetWidth / 2;
+  return {
+    left: centerX - halfWidth,
+    right: centerX + halfWidth,
+    bottom: extent.bottom,
+    top: extent.top,
+  };
+}
+
 function convertToSvg() {
   if (!geojsonInput.value.trim()) {
     showMessage("请先上传 GeoJSON 文件", "warning");
@@ -328,11 +362,12 @@ function convertToSvg() {
 
   try {
     const geojson = JSON.parse(geojsonInput.value) as RawGeoJSON;
-    const mapExtent = getMapExtent(geojson);
-    if (!mapExtent) {
+    const rawExtent = getMapExtent(geojson);
+    if (!rawExtent) {
       showMessage("未找到有效坐标，请检查 GeoJSON 数据", "error");
       return;
     }
+    const mapExtent = normalizeExtentToViewport(rawExtent, svgWidth.value, svgHeight.value);
 
     const converter = new GeoJSON2SVG({
       viewportSize: {

@@ -186,6 +186,14 @@ import type { MessageType } from "@/composables/useMessage";
 type CoordinateType = "WGS84" | "GCJ02" | "BD09";
 type ConvertFn = (lng: number, lat: number) => [number, number];
 type TabType = "single" | "batch" | "geojson";
+type GeoJsonGeometryType =
+  | "Point"
+  | "MultiPoint"
+  | "LineString"
+  | "MultiLineString"
+  | "Polygon"
+  | "MultiPolygon"
+  | "GeometryCollection";
 
 const showMessage = inject<(text: string, type?: MessageType) => void>("showMessage")!;
 const activeTab = ref<TabType>("single");
@@ -249,6 +257,10 @@ function runConvert() {
     showMessage("请输入合法的经纬度数值", "error");
     return;
   }
+  if (lng < -180 || lng > 180 || lat < -90 || lat > 90) {
+    showMessage("经纬度超出范围：经度[-180,180]，纬度[-90,90]", "error");
+    return;
+  }
 
   const convertKey = `${sourceType.value}->${targetType.value}`;
   const converter = converterMap[convertKey];
@@ -300,29 +312,94 @@ function transformCoordinates(raw: unknown, counter: { value: number }): unknown
   return raw.map((item) => transformCoordinates(item, counter));
 }
 
+function transformBbox(raw: unknown): unknown {
+  if (!Array.isArray(raw)) {
+    return raw;
+  }
+
+  if (
+    raw.length === 4 &&
+    raw.every((item) => typeof item === "number" && Number.isFinite(item))
+  ) {
+    const min = convertCoordinate(raw[0], raw[1]);
+    const max = convertCoordinate(raw[2], raw[3]);
+    if (!min || !max) {
+      return raw;
+    }
+    return [min[0], min[1], max[0], max[1]];
+  }
+
+  if (
+    raw.length === 6 &&
+    raw.every((item) => typeof item === "number" && Number.isFinite(item))
+  ) {
+    const min = convertCoordinate(raw[0], raw[1]);
+    const max = convertCoordinate(raw[3], raw[4]);
+    if (!min || !max) {
+      return raw;
+    }
+    return [min[0], min[1], raw[2], max[0], max[1], raw[5]];
+  }
+
+  return raw;
+}
+
+function transformGeometry(geometry: unknown, counter: { value: number }): unknown {
+  if (!geometry || typeof geometry !== "object" || Array.isArray(geometry)) {
+    return geometry;
+  }
+
+  const record = geometry as Record<string, unknown>;
+  const type = record.type as GeoJsonGeometryType | undefined;
+  if (!type) {
+    return geometry;
+  }
+
+  const next: Record<string, unknown> = { ...record };
+
+  if (record.bbox !== undefined) {
+    next.bbox = transformBbox(record.bbox);
+  }
+
+  if (type === "GeometryCollection") {
+    const geometries = record.geometries;
+    if (Array.isArray(geometries)) {
+      next.geometries = geometries.map((item) => transformGeometry(item, counter));
+    }
+    return next;
+  }
+
+  if (record.coordinates !== undefined) {
+    next.coordinates = transformCoordinates(record.coordinates, counter);
+  }
+  return next;
+}
+
 function transformGeojsonNode(node: unknown, counter: { value: number }): unknown {
-  if (!node || typeof node !== "object") {
+  if (!node || typeof node !== "object" || Array.isArray(node)) {
     return node;
   }
 
-  if (Array.isArray(node)) {
-    return node.map((item) => transformGeojsonNode(item, counter));
+  const record = node as Record<string, unknown>;
+  const type = record.type;
+
+  if (type === "FeatureCollection" && Array.isArray(record.features)) {
+    return {
+      ...record,
+      bbox: transformBbox(record.bbox),
+      features: record.features.map((feature) => transformGeojsonNode(feature, counter)),
+    };
   }
 
-  const record = node as Record<string, unknown>;
-  const next: Record<string, unknown> = {};
-  for (const [key, value] of Object.entries(record)) {
-    if (key === "coordinates") {
-      next[key] = transformCoordinates(value, counter);
-      continue;
-    }
-    if (key === "bbox") {
-      next[key] = value;
-      continue;
-    }
-    next[key] = transformGeojsonNode(value, counter);
+  if (type === "Feature") {
+    return {
+      ...record,
+      bbox: transformBbox(record.bbox),
+      geometry: transformGeometry(record.geometry, counter),
+    };
   }
-  return next;
+
+  return transformGeometry(record, counter);
 }
 
 function runBatchConvert() {
@@ -361,6 +438,10 @@ function runBatchConvert() {
     const lat = Number(parts[1]);
     if (!Number.isFinite(lng) || !Number.isFinite(lat)) {
       outputs.push(`第 ${index + 1} 行: 坐标非法 -> ${raw}`);
+      return;
+    }
+    if (lng < -180 || lng > 180 || lat < -90 || lat > 90) {
+      outputs.push(`第 ${index + 1} 行: 超出范围(经度[-180,180] 纬度[-90,90]) -> ${raw}`);
       return;
     }
 
